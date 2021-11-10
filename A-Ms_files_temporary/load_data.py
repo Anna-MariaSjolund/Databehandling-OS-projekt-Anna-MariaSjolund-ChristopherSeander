@@ -1,7 +1,7 @@
 import pandas as pd
 
 class LoadDataUSA:
- 
+
     @staticmethod 
     def full_data():
         usa_data = LoadSportData.full_data()
@@ -35,25 +35,44 @@ class LoadDataUSA:
         #Merge the data (USA did not take part in the games of 1980 summer)
         medals_merged_data = pd.merge(medals_usa, medals_total, on="Games", how="left")
         medals_merged_data["Percentage of Medals"] = (medals_merged_data["Medals USA"]/medals_merged_data["Medals total"])*100
-
-        return medals_merged_data
  
+        return medals_merged_data
+  
     @staticmethod
     def medals_per_sport():
         medals = LoadDataUSA.medals_won()
-        number_medals_sport = pd.DataFrame({"Number of medals": medals["Medal"].groupby(medals["Sport"]).count()}).reset_index()
+        number_medals_sport = pd.DataFrame({"Total medals": medals["Medal"].groupby(medals["Sport"]).count()}).reset_index()
 
         number_medals_sport["Number of events"] = number_medals_sport["Sport"].apply(lambda row: len(medals[medals["Sport"] == row]["Event"].unique()))
-        number_medals_sport["Medals per event"] = number_medals_sport["Number of medals"]/number_medals_sport["Number of events"]
+        number_medals_sport["Medals per event"] = number_medals_sport["Total medals"]/number_medals_sport["Number of events"]
 
         return number_medals_sport
 
     @staticmethod
-    def top_ten_sports():
-        medals = LoadDataUSA.medals_per_sport()
-        top_sports = medals.sort_values(by="Number of medals", ascending=False).reset_index(drop=True)
+    def medals_top_ten_sports():
+
+        #Import the data
+        medals_won_all = LoadDataUSA.medals_won()
+        sport_medals = LoadDataUSA.medals_per_sport()
+
+        #Sort the medals by Total Medals
+        top_ten_sports = sport_medals.sort_values(by="Total medals", ascending=False).reset_index(drop=True).head(10)
+
+        #Creates new data frame with the different medal types for the top ten sports
+        list_of_sports = list(top_ten_sports["Sport"]) #Creates a list of the names for the sports in the top_ten_sports
+        sport_medals_top_ten = pd.DataFrame({"Total medals": medals_won_all["Medal"].groupby(medals_won_all["Sport"]).value_counts()}).reset_index()
+        sport_medals_top_ten = sport_medals_top_ten[sport_medals_top_ten["Sport"].isin(list_of_sports)] #Reference: https://thispointer.com/python-pandas-select-rows-in-dataframe-by-conditions-on-multiple-columns/
+
+        #Change format
+        sport_medals_top_ten = sport_medals_top_ten.pivot_table("Total medals", ["Sport"], "Medal").reset_index() #Reference: https://stackoverflow.com/questions/17298313/python-pandas-convert-rows-as-column-headers
+        sport_medals_top_ten = sport_medals_top_ten.rename_axis(None, axis=1) #Reference: https://stackoverflow.com/questions/29765548/remove-index-name-in-pandas
+        sport_medals_top_ten = sport_medals_top_ten[["Sport", "Bronze", "Silver", "Gold"]]
         
-        return top_sports.head(10)
+        #Merge the data
+        sport_medals_top_ten = pd.merge(sport_medals_top_ten, top_ten_sports, on="Sport")
+        sport_medals_top_ten = sport_medals_top_ten.sort_values(by="Total medals", ascending=False).reset_index(drop=True)
+
+        return sport_medals_top_ten
 
     @staticmethod
     def top_ten_sports_average_medals_per_event():
@@ -61,24 +80,40 @@ class LoadDataUSA:
         top_sports = medals.sort_values(by="Medals per event", ascending=False).reset_index(drop=True)
         
         return top_sports.head(10)
- 
+  
+    @staticmethod 
+    def medals_top_ten_events(): 
+
+        #Import the data
+        medals_won_all = LoadDataUSA.medals_won()
+
+        #Create dataset with the number of medals per event and sort the medals by Total Medals
+        medals_per_event = pd.DataFrame({"Total medals": medals_won_all["Medal"].groupby(medals_won_all["Event"]).count()}).reset_index()
+        top_ten_events = medals_per_event.sort_values(by="Total medals", ascending=False).reset_index(drop=True).head(10)
+        
+        #Creates new data frame with the different medal types for the top ten sports
+        list_of_events = list(top_ten_events["Event"])
+        event_medals_top_ten = pd.DataFrame({"Total medals": medals_won_all["Medal"].groupby(medals_won_all["Event"]).value_counts()}).reset_index()
+        event_medals_top_ten = event_medals_top_ten[event_medals_top_ten["Event"].isin(list_of_events)] #Reference: https://thispointer.com/python-pandas-select-rows-in-dataframe-by-conditions-on-multiple-columns/
+
+        #Change format
+        event_medals_top_ten = event_medals_top_ten.pivot_table("Total medals", ["Event"], "Medal").reset_index() #Reference: https://stackoverflow.com/questions/17298313/python-pandas-convert-rows-as-column-headers
+        event_medals_top_ten = event_medals_top_ten.rename_axis(None, axis=1) #Reference: https://stackoverflow.com/questions/29765548/remove-index-name-in-pandas
+        
+        #Merge the data
+        event_medals_top_ten = event_medals_top_ten[["Event", "Bronze", "Silver", "Gold"]]
+        event_medals_top_ten = pd.merge(event_medals_top_ten, top_ten_events, on="Event")
+        event_medals_top_ten = event_medals_top_ten.sort_values(by="Total medals", ascending=False).reset_index(drop=True)
+
+        return event_medals_top_ten      
+
+
     @staticmethod 
     def top_ten_events():
         medals = LoadDataUSA.medals_won()
-        medals_per_event = pd.DataFrame({"Number of medals": medals["Medal"].groupby(medals["Event"]).count()}).reset_index()
-        medals_per_event = medals_per_event.sort_values(by="Number of medals", ascending=False).reset_index(drop=True)
-        
+
         return medals_per_event.head(10)
     
-    @staticmethod
-    def medal_types_top_ten_sports():
-        medals = LoadDataUSA.medals_won()
-        sports_top_ten = LoadDataUSA.top_ten_sports()
-        list_of_sports = list(sports_top_ten["Sport"])
-        medals_won_per_type = pd.DataFrame({"Number medals won": medals["Medal"].groupby(medals["Sport"]).value_counts()}).reset_index()
-        medals_won_per_type = medals_won_per_type[medals_won_per_type["Sport"].isin(list_of_sports)] #Reference: https://thispointer.com/python-pandas-select-rows-in-dataframe-by-conditions-on-multiple-columns/
-        
-        return medals_won_per_type
 
 class LoadSportData:
 
