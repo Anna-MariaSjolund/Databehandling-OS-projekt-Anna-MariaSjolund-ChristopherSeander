@@ -68,16 +68,11 @@ class SportStatistics:
         # select correct sport and time period
         age_data = self.sport_and_year(sport)
 
-        # male age data
-        age_data_m = pd.DataFrame(age_data["Age"][age_data["Sex"] == "M"])
-        age_data_m = age_data_m[age_data_m["Age"].notna()]
-
-        # female age data
-        age_data_f = pd.DataFrame(age_data["Age"][age_data["Sex"] == "F"])
-        age_data_f = age_data_f[age_data_f["Age"].notna()]
-
-        # prepair data for plot
-        age_data = [age_data_m["Age"], age_data_f["Age"]]
+        # new DataFrame with all ages from males and females
+        age_data = pd.DataFrame([age_data["Age"][age_data["Sex"] == "M"], 
+                                    age_data["Age"][age_data["Sex"] == "F"]], 
+                                    index=["Male", "Female"])
+        age_data = age_data.transpose().reset_index(drop=True)
 
         return age_data
 
