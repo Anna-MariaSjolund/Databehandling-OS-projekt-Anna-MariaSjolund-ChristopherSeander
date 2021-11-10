@@ -1,5 +1,7 @@
 import pandas as pd
 
+#TODO: Save the new dataset with hashed names and use that instead
+
 class LoadDataUSA:
 
     @staticmethod 
@@ -106,14 +108,48 @@ class LoadDataUSA:
         event_medals_top_ten = event_medals_top_ten.sort_values(by="Total medals", ascending=False).reset_index(drop=True)
 
         return event_medals_top_ten      
-
-
-    @staticmethod 
-    def top_ten_events():
-        medals = LoadDataUSA.medals_won()
-
-        return medals_per_event.head(10)
     
+    @staticmethod
+    def participants_data():
+        usa_data = LoadDataUSA.full_data()
+        world_data = LoadSportData.full_data()
+
+        #Remove people who participate in several events (the ID:s should be unique for each game)
+        usa_data_unique_ID = usa_data.drop_duplicates(subset=["Games", "ID"])
+        world_data_unique_ID = world_data.drop_duplicates(subset=["Games", "ID"])
+
+        #Create two dataframes for the participants and count the number of people for each olympic game and then merge them
+        usa_participants = pd.DataFrame({"Participants from USA":usa_data_unique_ID["ID"].groupby(usa_data_unique_ID["Games"]).count()}).reset_index()
+        world_participants = pd.DataFrame({"Total Number of Participants":world_data_unique_ID["ID"].groupby(world_data_unique_ID["Games"]).count()}).reset_index()
+        participants_data = pd.merge(usa_participants, world_participants, on="Games", how="left")
+
+        #Split the Games column into two and create Year and Season 
+        year_season = participants_data["Games"].str.split(" ", n = 1, expand = True) #Splits each string in the Games column into two columns. Reference: https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
+        participants_data.insert(0, "Year", year_season[0])
+        participants_data.insert(1, "Season", year_season[1])
+
+        #Calculates the percentage of american participants for each game
+        participants_data["American Participants (%)"] = ((participants_data["Participants from USA"]/participants_data["Total Number of Participants"])*100).round(1)
+
+        #Creates gender data
+        gender_usa = pd.DataFrame({"Number of Males from USA":usa_data_unique_ID["Sex"][usa_data_unique_ID["Sex"] == "M"].groupby(usa_data_unique_ID["Games"]).count(),
+                                "Number of Females from USA":usa_data_unique_ID["Sex"][usa_data_unique_ID["Sex"] == "F"].groupby(usa_data_unique_ID["Games"]).count()}).reset_index()
+        gender_world = pd.DataFrame({"Total Number Males":world_data_unique_ID["Sex"][world_data_unique_ID["Sex"] == "M"].groupby(world_data_unique_ID["Games"]).count(),
+                                "Total Number Females":world_data_unique_ID["Sex"][world_data_unique_ID["Sex"] == "F"].groupby(world_data_unique_ID["Games"]).count()}).reset_index()
+
+        #Merge the gender data with the participants data and fill the NaN (created when there were no females in the data) with 0
+        participants_data = pd.merge(participants_data, gender_usa, on="Games", how="left").fillna(0)
+        participants_data = pd.merge(participants_data, gender_world, on="Games", how="left").fillna(0)
+
+        #Calculates the percentage of female and male participants from USA and the world
+        participants_data["Female Participants from USA (%)"] = ((participants_data["Number of Females from USA"]/participants_data["Participants from USA"])*100).round(1)
+        participants_data["Male Participants from USA (%)"] = ((participants_data["Number of Males from USA"]/participants_data["Participants from USA"])*100).round(1)
+        participants_data["World Female Participants (%)"] = ((participants_data["Total Number Females"]/participants_data["Total Number of Participants"])*100).round(1)
+        participants_data["World Male Participants (%)"] = ((participants_data["Total Number Males"]/participants_data["Total Number of Participants"])*100).round(1)
+
+        return participants_data
+
+
 
 class LoadSportData:
 
