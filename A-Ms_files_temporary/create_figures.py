@@ -69,12 +69,7 @@ class PlotFigures:
         fig.update_traces(hovertemplate=hover_template)
 
         #Sets the ticks
-        fig.update_layout(
-                        xaxis=(dict(
-                        tickmode = "linear",
-                        tick0 = 0,
-                        dtick = 4,
-                        )))
+        fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
 
         return fig
     
@@ -111,4 +106,79 @@ class PlotFigures:
                         barmode="group", 
                         color_discrete_sequence=bar_colors, 
                         template="plotly_white")
+        return fig
+
+    @staticmethod
+    def plot_participants(season="all", log_scaled=True, percentage=False):
+
+        participants_data = LoadDataUSA.participants_data()
+
+        if percentage == False:
+            y_data = ["Participants from USA", "Total Number of Participants"]
+        else:
+            y_data = "American Participants (%)"
+            log_scaled = False
+
+        if season == "all":
+            color="Season"
+            y_data = ["Participants from USA", "Total Number of Participants", ]
+            line_color = ["OrangeRed", "RoyalBlue"]
+            title="Participants from the USA and the World in the Olympic Games"
+        elif season == "summer":
+            participants_data = participants_data[participants_data["Season"] == "Summer"]
+            line_color = ["IndianRed", "DarkRed"]
+            title="Participants from the USA and the World in the Summer Olympic Games"
+        elif season == "winter":
+            participants_data = participants_data[participants_data["Season"] == "Winter"]
+            line_color=["CornflowerBlue", "Navy"]
+            title="Participants from the USA and the World in the Winter Olympic Games"
+
+        if season == "summer" or season == "winter":
+            color=None
+
+        if log_scaled == True:
+            y_label = "Number of Participants (log-scaled)"
+        else:
+            y_label = "Number of Participants"
+
+        fig = px.line(participants_data, 
+                x="Year", 
+                y=y_data,
+                color=color, 
+                log_y=log_scaled,
+                labels={"value":y_label, "variable": "Participants"}, 
+                color_discrete_sequence=line_color,
+                title=title,
+                markers=True,
+                )
+
+        fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+
+        return fig
+
+    @staticmethod
+    def plot_gender_distribution(season="all"):
+        
+        participants_data = LoadDataUSA.participants_data()
+
+        if season == "all":
+            title = "Gender Distribution among Participants from USA and the World at the Olympic Games"
+        elif season == "summer":
+            participants_data = participants_data[participants_data["Season"] == "Summer"]
+            title = "Gender Distribution among Participants from USA and the World at the Summer Olympic Games"
+        elif season == "winter":
+            participants_data = participants_data[participants_data["Season"] == "Winter"]
+            title = "Gender Distribution among Participants from USA and the World at the Winter Olympic Games"
+
+        fig = px.line(participants_data, 
+                x="Year", 
+                y=["Female Participants from USA (%)", "Male Participants from USA (%)", "World Female Participants (%)", "World Male Participants (%)"], 
+                title=title, 
+                labels={"value":"Percentage", "variable": "Participant Group"}, 
+                color_discrete_sequence=["LightPink", "CornflowerBlue", "DeepPink", "MidnightBlue"],
+                markers=True, 
+                )
+
+        fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+
         return fig
