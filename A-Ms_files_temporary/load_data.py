@@ -127,7 +127,7 @@ class LoadDataUSA:
         year_season = participants_data["Games"].str.split(" ", n = 1, expand = True) #Splits each string in the Games column into two columns. Reference: https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
         participants_data.insert(0, "Year", year_season[0])
         participants_data.insert(1, "Season", year_season[1])
-
+  
         #Calculates the percentage of american participants for each game
         participants_data["American Participants (%)"] = ((participants_data["Participants from USA"]/participants_data["Total Number of Participants"])*100).round(1)
 
@@ -149,12 +149,10 @@ class LoadDataUSA:
 
         return participants_data
 
-
-
 class LoadSportData:
 
     @staticmethod
-    def full_data():
+    def full_data(): 
         sport_data = pd.read_csv("../Data/athlete_events.csv")
 
         return sport_data

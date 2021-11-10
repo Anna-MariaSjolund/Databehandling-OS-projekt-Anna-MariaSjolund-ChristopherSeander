@@ -112,16 +112,10 @@ class PlotFigures:
     def plot_participants(season="all", log_scaled=True, percentage=False):
 
         participants_data = LoadDataUSA.participants_data()
-
-        if percentage == False:
-            y_data = ["Participants from USA", "Total Number of Participants"]
-        else:
-            y_data = "American Participants (%)"
-            log_scaled = False
+        y_data = ["Participants from USA", "Total Number of Participants"]
 
         if season == "all":
             color="Season"
-            y_data = ["Participants from USA", "Total Number of Participants", ]
             line_color = ["OrangeRed", "RoyalBlue"]
             title="Participants from the USA and the World in the Olympic Games"
         elif season == "summer":
@@ -133,13 +127,17 @@ class PlotFigures:
             line_color=["CornflowerBlue", "Navy"]
             title="Participants from the USA and the World in the Winter Olympic Games"
 
-        if season == "summer" or season == "winter":
+        if season == "summer" or season == "winter" or percentage == True:
             color=None
 
         if log_scaled == True:
             y_label = "Number of Participants (log-scaled)"
         else:
             y_label = "Number of Participants"
+
+        if percentage == True:
+            y_data = "American Participants (%)"
+            log_scaled = False
 
         fig = px.line(participants_data, 
                 x="Year", 
