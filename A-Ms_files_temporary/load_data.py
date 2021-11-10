@@ -2,7 +2,7 @@ import pandas as pd
 
 class LoadDataUSA:
  
-    @staticmethod
+    @staticmethod 
     def full_data():
         usa_data = LoadSportData.full_data()
         usa_data = usa_data[usa_data["NOC"] == "USA"].reset_index(drop=True)
