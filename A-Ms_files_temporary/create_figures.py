@@ -2,7 +2,7 @@ from load_data import LoadDataUSA
 import plotly.graph_objects as go
 import plotly_express as px
 
-class PlotFigures:
+class PlotFigures: 
      
     @staticmethod
     def plot_medals_per_season(season="all", percentage=True):
@@ -76,4 +76,39 @@ class PlotFigures:
                         dtick = 4,
                         )))
 
+        return fig
+    
+    #TODO:Change name for this plot function and add documentation
+    def plot_medals_per_sport(sport_or_event="sport", y_data=["Bronze", "Silver", "Gold"], total=False):
+
+        if sport_or_event == "sport":
+            dataset = LoadDataUSA.medals_top_ten_sports()
+            x_data = "Sport"
+            title="Top Ten Sports for USA in the Olympic Games"
+        elif sport_or_event == "event":
+            dataset = LoadDataUSA.medals_top_ten_events()
+            x_data = "Event"
+            title="Top Ten Events for USA in the Olympic Games"
+
+        if total == False:
+            bar_colors = []
+            for medal in y_data:
+                if medal == "Bronze":
+                    bar_colors.append("#CD7F32")
+                elif medal == "Silver":
+                    bar_colors.append("#C0C0C0")
+                elif medal == "Gold":
+                    bar_colors.append("#FFD700")
+        else:
+            y_data = "Total medals"
+            bar_colors = ["OliveDrab"]
+            
+        fig = px.bar(dataset, 
+                        x=x_data, 
+                        y=y_data, 
+                        labels={"value":"Number of medals", "variable":"Medal Type"}, 
+                        title=title,
+                        barmode="group", 
+                        color_discrete_sequence=bar_colors, 
+                        template="plotly_white")
         return fig
