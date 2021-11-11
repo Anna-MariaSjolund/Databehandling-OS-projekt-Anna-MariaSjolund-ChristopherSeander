@@ -13,7 +13,7 @@ app.layout = html.Div([
     children=[
         dcc.Tab(label="USA", value="tab-usa"),
         dcc.Tab(label="Sports statistics", value="tab-sports") #The tabs shown
-    ]),
+    ]), 
     html.Div(id="content")
 ])
 
