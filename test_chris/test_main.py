@@ -11,13 +11,20 @@ import callbacks
 
 app.layout = dbc.Container([
     dbc.Card([
+        dbc.CardBody(
         dcc.Tabs(id="tabs", value="tab-usa", 
                 children=[
-        dcc.Tab(label="USA", value="tab-usa"),
-        dcc.Tab(label="Sports statistics", value="tab-sports")
-    ])
-    ])
-    ,
+                        dcc.Tab(label="USA", 
+                                value="tab-usa",
+                                className="custom-tab",
+                                style={"background-color": "#424242"}),
+                        dcc.Tab(label="Sports statistics", 
+                                value="tab-sports",
+                                className="custom-tab",
+                                style={"background-color": "#424242"})
+                        ])
+        )
+    ], className="mt-3"),
     html.Div(id="content")
 ])
 
