@@ -3,17 +3,21 @@
 # https://stackoverflow.com/questions/50213761/changing-visibility-of-a-dash-component-by-updating-other-component
 from dash.dependencies import Output, Input
 from dash import dcc, html
+import dash_bootstrap_components as dbc
 
 from app import app
 from layouts import usa_layout, sports_layout
 import callbacks
 
-app.layout = html.Div([
-    dcc.Tabs(id="tabs", value="tab-usa", # style={"width": "50%"}
-    children=[
+app.layout = dbc.Container([
+    dbc.Card([
+        dcc.Tabs(id="tabs", value="tab-usa", 
+                children=[
         dcc.Tab(label="USA", value="tab-usa"),
         dcc.Tab(label="Sports statistics", value="tab-sports")
-    ]),
+    ])
+    ])
+    ,
     html.Div(id="content")
 ])
 

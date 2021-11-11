@@ -8,12 +8,12 @@ from noc_to_region import noc_to_region
 from layouts import sport_statistics
 
 sport_statistics_dict = dict(age = "Age distribution",
-                                        athlete = "Athlete info",
-                                        gender = "Gender distribution", 
-                                        medals = "Most medals")
+                            athlete = "Athlete info",
+                            gender = "Gender distribution", 
+                            medals = "Most medals")
 no_athlete_info_dict = dict(age = "Age distribution",
-                                        gender = "Gender distribution", 
-                                        medals = "Most medals")
+                            gender = "Gender distribution", 
+                            medals = "Most medals")
 
 @app.callback(
     Output("sport-statistics", "options"),
@@ -58,9 +58,10 @@ def print_name_of_sport(sport, statistic):
 @app.callback(
     Output("sports-graph", "figure"),   # return outputs to here
     Input("sports-data", "data"),       # gets data based on which country is chosen
-    Input("sport-statistics", "value")  # select which statistic that should be shown
+    Input("sport-statistics", "value"),  # select which statistic that should be shown
+    Input("sports-dropdown", "value"),
 )
-def update_sports_graph(df_json, statistic):
+def update_sports_graph(df_json, statistic, sport):
     data = pd.read_json(df_json)
 
     # most medals per country
@@ -73,15 +74,19 @@ def update_sports_graph(df_json, statistic):
     
     # gender distribution
     if statistic == "gender":
-        fig = px.line(data, x="Year", y=["Male", "Female"])
+        fig = px.line(data, x="Year", y=["Male", "Female"], labels={"value" : "Number", "variable" : "Gender"})
         return fig
 
+    # TODO gender choice
     # age distribution
     if statistic == "age":
         # ff.create_distplot needs the data as list of lists
+        hover_template = "<br>Age: %{x:.1f}<extra></extra>"
+        
         data_split = [data[data["Male"].notna()]["Male"], data[data["Female"].notna()]["Female"]]
-        fig = ff.create_distplot(data_split, data.columns)
-
+        fig = ff.create_distplot(data_split, data.columns, curve_type="normal", show_hist=False, show_rug=False)
+        fig.update_traces(hovertemplate=hover_template)
+        fig.update_layout(title=f"Normal distribution for ages in {sport.lower()}", xaxis_title="Age", yaxis_title="Density")
         return fig
 
     # -----------WORKS ONLY FOR BASKETBALL RIGHT NOW-----------

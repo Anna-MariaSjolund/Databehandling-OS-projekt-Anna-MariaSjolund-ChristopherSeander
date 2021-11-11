@@ -1,0 +1,13 @@
+h1{
+    color: brown;
+}
+
+.Select-value-label{
+    color:chartreuse;
+}
+#sports-dropdown{
+    color:black;
+}
+.Select--multi .Select--Value{
+    background-color: blueviolet;
+}
