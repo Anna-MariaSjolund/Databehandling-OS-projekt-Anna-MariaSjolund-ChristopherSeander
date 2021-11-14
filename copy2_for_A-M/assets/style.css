@@ -1,0 +1,47 @@
+#sports-dropdown{
+    color:black;
+}
+label {
+    margin-right: 1rem;
+}
+
+.custom-tab {
+    color:#999999;
+    border-radius: 5px;
+    border: solid transparent !important;
+    padding: 12px !important;
+    margin: 0px 10px 0px 10px;
+    font-size: large;
+} 
+
+#usa-dropdown{
+    color:black;
+}
+label {
+    margin-right: 1rem;
+}
+
+.custom-tab {
+    color:#999999;
+    border-radius: 5px;
+    border: solid transparent !important;
+    padding: 12px !important;
+    margin: 0px 10px 0px 10px;
+    font-size: large;
+} 
+
+#medals-dropdown{
+    color:black;
+}
+label {
+    margin-right: 1rem;
+}
+
+.custom-tab {
+    color:#999999;
+    border-radius: 5px;
+    border: solid transparent !important;
+    padding: 12px !important;
+    margin: 0px 10px 0px 10px;
+    font-size: large;
+} 
