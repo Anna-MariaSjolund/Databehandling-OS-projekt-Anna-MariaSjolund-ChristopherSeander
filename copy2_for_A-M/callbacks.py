@@ -136,75 +136,39 @@ def update_radio_buttons(choice1, choice2):
         else :
             return [{"label" : label, "value" : value} for value, label in gender_options_dict.items()]
     
+@app.callback(
+    Output("usa-graph", "figure"),
+    Input("usa-dropdown", "value"),
+    Input("graph-dropdown", "value"),
+    Input("radio-settings", "value")
+)
+def update_graph(choice1, choice2, choice3):
+    if choice1 == "medals":
+        if choice2 == "medals_year":
+            return PlotFigures.plot_medals_per_year(season=choice3)
+        else:
+            return PlotFigures.plot_top_ten_sports_or_events(y_data=[choice3])
+
+    else:
+        if choice2 == "participants":
+            return PlotFigures.plot_participants(choice3)
+        else:
+            return PlotFigures.plot_gender_distribution(choice3)
+    """if choice1 == "medals":
+        if choice2 == "medals_year":
+            if choice3 == "winter":
+                return PlotFigures.plot_medals_per_year(season="winter")
+    else: 
+        return PlotFigures.plot_gender_distribution()"""
+
+
+
 #Dictionaries for Graph Dropdown
-
 medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")
-#medals_options_dropdown = [{"label" : label, "value" : value} for value, label in medals_options_dict.items()]
-
 participants_options_dict = dict(participants = "Participants from USA and the World", gender="Gender distribution for USA and the world")
-#participants_options_dropdown = [{"label" : label, "value" : value} for value, label in participants_options_dict.items()]
-
 
 #Dictionaries for Radio Buttons
-
-medals_per_year_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer", percentage="Percentage or Total")
-#medals_per_year_radio = [{"label" : label, "value" : value} for value, label in medals_per_year_usa_dict.items()]
-
-medals_per_sport_options_dict = dict(sport_or_event="Sport or Event?", gold="Gold", silver="Silver", bronze="Bronze")
-#medals_per_sport_radio = [{"label" : label, "value" : value} for value, label in medals_per_sport_usa_dict.items()]
-
-plot_participants_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer", percentage="Percentage or Total", log_scaled="Yes or no?")
-
+medals_per_year_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #percentage="Percentage or Total")
+medals_per_sport_options_dict = dict(Gold="Gold", Silver="Silver", Bronze="Bronze") #sport_or_event="Sport or Event?", 
+plot_participants_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #, percentage="Percentage or Total", log_scaled="Yes or no?")
 gender_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer")
-
-"""@app.callback(
-    Output("usa-graph", "figure"),   # return outputs to here
-    Input("usa-dropdown", "value")  # select which statistic that should be shown
-)   
-def update_sports_graph(category):
-    # most medals per country 
-    if category == "medals":
-        return PlotFigures.plot_medals_per_season() 
-    else:
-        return PlotFigures.plot_participants()"""
-
-
-
-
-
-"""@app.callback(
-    Output("usa-graph", "value"),
-    Input("usa-dropdown", "value"),
-    #Input("usa-dropdown2", "value"),
-    #Input("usa-statistics-choice", value)
-)
-
-def update(value):
-    if value == "medals":
-        return PlotFigures.plot_medals_per_season()"""
-
-
-"""@app.callback(
-    Output("usa-graph", "figure"),   # return outputs to here
-    Input("usa-dropdown", "value")  # select which statistic that should be shown
-)   
-def update_usa_graph(category):
-    # most medals per country 
-    if category == "medals":
-        return PlotFigures.plot_participants()"""
-
-
-
-
-
-
-
-"""@app.callback(
-    Output("dropdown2", "options"),
-    Input("usa-dropdown", "value")
-)
-def update_usa_dropdown(choice):
-    if choice == "medals":
-        return [{"label" : medals_dict[index], "value" : index} for index in medals_dict]
-    else:
-        return [{"label" : participants_dict[index], "value" : index} for index in participants_dict]"""

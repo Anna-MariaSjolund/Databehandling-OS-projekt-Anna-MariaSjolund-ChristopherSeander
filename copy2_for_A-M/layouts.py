@@ -46,16 +46,15 @@ usa_layout = html.Div([
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        daq.ToggleSwitch(
+                        """daq.ToggleSwitch(
                         id='my-toggle-switch',
                         value=False
-                        ),
+                        )""",
                         dcc.RadioItems(
                             id="radio-settings", 
                             options = []
                         )
-                    ]
-                    )
+                    ])
                 )
             )
         ]),
