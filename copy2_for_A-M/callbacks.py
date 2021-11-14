@@ -135,33 +135,44 @@ def update_radio_buttons(choice1, choice2):
             return [{"label" : label, "value" : value} for value, label in plot_participants_options_dict.items()]
         else :
             return [{"label" : label, "value" : value} for value, label in gender_options_dict.items()]
-    
+
 @app.callback(
-    Output("usa-graph", "figure"),
+    Output("my-toggle-switch", component_property="label"),
     Input("usa-dropdown", "value"),
     Input("graph-dropdown", "value"),
     Input("radio-settings", "value")
 )
-def update_graph(choice1, choice2, choice3):
+def update_toggle_switch(choice1, choice2, choice3):
     if choice1 == "medals":
         if choice2 == "medals_year":
-            return PlotFigures.plot_medals_per_year(season=choice3)
+            return dict(label="Amount / Percentage") #TODO: Fix spaces
         else:
-            return PlotFigures.plot_top_ten_sports_or_events(y_data=[choice3])
+            return dict(label="Sport .... Event")
+    else:
+        if choice2 == "participants":
+            return dict(label="Normal / Log-scaled")
+        else:
+            return dict(label="No choice")
+
+@app.callback(
+    Output("usa-graph", "figure"),
+    Input("usa-dropdown", "value"),
+    Input("graph-dropdown", "value"),
+    Input("radio-settings", "value"),
+    Input("my-toggle-switch", "value")
+)
+def update_graph(choice1, choice2, choice3, choice4):
+    if choice1 == "medals":
+        if choice2 == "medals_year":
+            return PlotFigures.plot_medals_per_year(season=choice3, percentage=choice4)
+        else:
+            return PlotFigures.plot_top_ten_sports_or_events(y_data=[choice3], total=choice4) #TODO: Change function, not interested in total here
 
     else:
         if choice2 == "participants":
-            return PlotFigures.plot_participants(choice3)
+            return PlotFigures.plot_participants(choice3, log_scaled=choice4)
         else:
             return PlotFigures.plot_gender_distribution(choice3)
-    """if choice1 == "medals":
-        if choice2 == "medals_year":
-            if choice3 == "winter":
-                return PlotFigures.plot_medals_per_year(season="winter")
-    else: 
-        return PlotFigures.plot_gender_distribution()"""
-
-
 
 #Dictionaries for Graph Dropdown
 medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")

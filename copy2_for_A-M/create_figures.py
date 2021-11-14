@@ -71,8 +71,13 @@ class PlotFigures:
         #Sets the ticks
         fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
 
+        fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+
         return fig
     
+    #Maybe change it to Bronze, Silver, Gold, All medals, Total number
     def plot_top_ten_sports_or_events(sport_or_event="sport", y_data=["Bronze", "Silver", "Gold"], total=False):
 
         if sport_or_event == "sport":
@@ -105,7 +110,14 @@ class PlotFigures:
                         barmode="group", 
                         color_discrete_sequence=bar_colors, 
                         template="plotly_white")
+        
+        fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+                
         return fig
+
+        
 
     @staticmethod
     def plot_participants(season="all", log_scaled=True, percentage=False):
@@ -151,6 +163,10 @@ class PlotFigures:
 
         fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
 
+        fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+
         return fig
 
     @staticmethod
@@ -177,5 +193,9 @@ class PlotFigures:
                 )
 
         fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+
+        fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
+        fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
 
         return fig

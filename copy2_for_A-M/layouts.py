@@ -9,9 +9,6 @@ sport_statistics = SportStatistics()
 
 sport_options_dropdown = [{"label" : sport, "value" : sport} for sport in sport_statistics.sports()]
 
-
-
-
 #A-Ms part USA
 
 usa_options_dict = dict(medals = "Medals", participants = "Participants")
@@ -38,23 +35,32 @@ usa_layout = html.Div([
                     dbc.CardBody(
                         dcc.Dropdown(
                             id="graph-dropdown",
-                            options = []
+                            value="medals_year"
                         )
                     )
                 )
             ),
             dbc.Col(
                 dbc.Card(
-                    dbc.CardBody([
-                        """daq.ToggleSwitch(
-                        id='my-toggle-switch',
-                        value=False
-                        )""",
+                    dbc.CardBody(
                         dcc.RadioItems(
                             id="radio-settings", 
-                            options = []
+                            value="all"
                         )
-                    ])
+                    )
+                )
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        daq.ToggleSwitch(
+                            id="my-toggle-switch",
+                            value=True,
+                            size=40,
+                            color="green",
+                            labelPosition="bottom"
+                        )
+                    )
                 )
             )
         ]),
