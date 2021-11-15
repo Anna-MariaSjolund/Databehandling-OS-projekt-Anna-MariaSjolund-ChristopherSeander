@@ -30,24 +30,29 @@ class SportStatistics:
         """Returns: Sorted list of sports"""
         return self._data["Sport"].sort_values().unique()
 
-    def medals(self, sport, from_year = 0) -> DataFrame:
+    def medals(self, sport, gender) -> DataFrame:
         """Returns: Medal count for top 10 countries based on sport and time period"""
 
         # select correct sport and time period
-        medal_data = self.sport_and_year(sport, from_year)
+        medal_data = self.sport_and_year(sport)
         medal_data = unique_medals(medal_data)
 
+        if gender == "both":
+            medal_data = medal_data["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
+        elif gender == "male":
+            medal_data = medal_data[medal_data["Sex"] == "M"]["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
+        else:
+            medal_data = medal_data[medal_data["Sex"] == "F"]["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
         # prepair data for plot
-        medal_data = medal_data["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
         medal_data = pd.DataFrame(dict(NOC = medal_data.index, Medal = medal_data)).reset_index(drop=True)
         
         return medal_data
 
-    def gender(self, sport, from_year = 0) -> DataFrame:
+    def gender(self, sport) -> DataFrame:
         """Returns: gender count per year for selected sport and time period"""
 
         # select correct sport and time period
-        gender_data = self.sport_and_year(sport, from_year)
+        gender_data = self.sport_and_year(sport)
 
         # male data
         gender_data_m = gender_data[gender_data["Sex"] == "M"]
@@ -76,11 +81,18 @@ class SportStatistics:
 
         return age_data
 
-    def height_basketball(self, from_year = 0) -> DataFrame:
+    def height_basketball(self, gender) -> DataFrame:
         """Returns: mean height per medal for basketball players for set time period"""
 
         # select basketball data from selected time period
-        height_data = self.sport_and_year("Basketball", from_year)
+        height_data = self.sport_and_year("Basketball")
+
+        if gender == "male":
+            height_data = height_data[height_data["Sex"] == "M"]
+        elif gender == "female":
+            height_data = height_data[height_data["Sex"] == "F"]
+        else:
+            pass
 
         # calculate mean height for players with a medal
         mean_hight_data = {}
@@ -92,13 +104,15 @@ class SportStatistics:
 
         # prepair data for plot
         mean_hight_data = pd.DataFrame(mean_hight_data.items(), columns=["Medal", "Mean height"])
+        
+        # shorten to two decimals
+        mean_hight_data["Mean height"] = mean_hight_data["Mean height"].apply('{:.2f}'.format)
 
         return mean_hight_data
 
     # help function for selecting sport and year
-    def sport_and_year(self, sport, from_year = 0) -> DataFrame:
+    def sport_and_year(self, sport) -> DataFrame:
         """Returns: Dataframe with specific sport and time period"""
         data = self._data[self._data["Sport"] == sport]
-        data = data[data["Year"] >= from_year]
 
         return data

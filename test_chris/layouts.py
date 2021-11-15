@@ -9,7 +9,6 @@ sport_statistics = SportStatistics()
 sport_options_dropdown = [{"label" : sport, "value" : sport} for sport in sport_statistics.sports()]
 
 usa_layout = html.Div([
-    html.H1("USA content")
 ])
 
 sports_layout = html.Div([
@@ -17,25 +16,17 @@ sports_layout = html.Div([
     dbc.Row([
         dbc.Col(
             dbc.Card(
-                dbc.CardBody(
-                    html.H1("Sports statistics"),
-                    style={"justify-content": "center", "align-items": "center", "display": "flex"}
-                ),
-                style={"height": "100%"}
-            ),
-            width=4
-        ),
-        dbc.Col(
-            dbc.Card(
                 dbc.CardBody([
                         html.H5("Select sport:"),
                         dcc.Dropdown(id="sports-dropdown",
                                 options=sport_options_dropdown,
-                                value="Alpine Skiing")
+                                value="Alpine Skiing",
+                                clearable=False)
                 ]),
                 style={"height": "100%"}
             ),
-            width=2
+            xl=2,
+            md=3
         ),
         dbc.Col(
             dbc.Card(
@@ -47,7 +38,13 @@ sports_layout = html.Div([
                 style={"height": "100%"},
                 className="",
             ),
-            width=6
+            xl=7,
+            md=5
+        ),
+        dbc.Col(
+            id="third-box",
+            xl=3,
+            md=4
         )
     ],
         className="mt-4"),
@@ -58,3 +55,17 @@ sports_layout = html.Div([
         className="mt-4"
     )
 ])
+#style={"justify-content": "center", "align-items": "center", "display": "flex"}
+
+gender_selection = dbc.Card(
+dbc.CardBody([
+    html.H5("Select gender:", className="pb-2"),
+    dcc.RadioItems(id='gender-selection',
+                    options=[{"label" : gender, "value" : gender.strip(" ").lower()} for gender in [" Both", " Male", " Female"]],
+                    value="both")
+    ]),
+    style={"height": "100%"}
+)
+
+# callback breaks if this doesnt exist
+hidden_gender_selection = dbc.RadioItems(id='gender-selection', value="both")

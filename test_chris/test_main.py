@@ -10,6 +10,7 @@ from layouts import usa_layout, sports_layout
 import callbacks
 
 app.layout = dbc.Container([
+    html.H1(id="title", className="pt-3"),
     dbc.Card([
         dbc.CardBody(
         dcc.Tabs(id="tabs", value="tab-usa", 
@@ -25,18 +26,19 @@ app.layout = dbc.Container([
                         ])
         )
     ], className="mt-3"),
-    html.Div(id="content")
+    html.Div(id="content"),
 ])
 
 @app.callback(
     Output("content", "children"),
+    Output("title", "children"),
     Input("tabs", "value")
 )
 def render_content(tab):
     if tab == "tab-usa":
-        return usa_layout
+        return usa_layout, "USA in the Olympic Games"
     else:
-        return  sports_layout
+        return  sports_layout, "Sports statistics in the Olympic Games"
 
 if __name__ == "__main__":
     app.run_server(debug=True)
