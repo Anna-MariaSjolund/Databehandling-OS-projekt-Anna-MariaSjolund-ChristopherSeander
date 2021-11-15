@@ -9,11 +9,12 @@ from app import app
 from layouts import usa_layout, sports_layout
 import callbacks
 
+# main layout
 app.layout = dbc.Container([
-    html.H1(id="title", className="pt-3"),
+    html.H1(id="title", className="pt-2"),      # dashboard title
     dbc.Card([
         dbc.CardBody(
-        dcc.Tabs(id="tabs", value="tab-usa", 
+        dcc.Tabs(id="tabs", value="tab-usa",    # tabs bar
                 children=[
                         dcc.Tab(label="USA", 
                                 value="tab-usa",
@@ -26,9 +27,10 @@ app.layout = dbc.Container([
                         ])
         )
     ], className="mt-3"),
-    html.Div(id="content"),
+    html.Div(id="content"),     # content container
 ])
 
+# changed what is shown in "content"
 @app.callback(
     Output("content", "children"),
     Output("title", "children"),

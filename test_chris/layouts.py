@@ -4,8 +4,10 @@ from dash import dcc, html
 from load_data import SportStatistics
 from noc_to_region import noc_to_region
 
+# SportStatistics object
 sport_statistics = SportStatistics()
 
+# drop down meny for chosing sport
 sport_options_dropdown = [{"label" : sport, "value" : sport} for sport in sport_statistics.sports()]
 
 usa_layout = html.Div([
@@ -55,8 +57,8 @@ sports_layout = html.Div([
         className="mt-4"
     )
 ])
-#style={"justify-content": "center", "align-items": "center", "display": "flex"}
 
+# gender selection card, is not showed all the time
 gender_selection = dbc.Card(
 dbc.CardBody([
     html.H5("Select gender:", className="pb-2"),

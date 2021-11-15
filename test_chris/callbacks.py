@@ -22,6 +22,7 @@ line_colors = ['cyan', 'magenta']
 male_color = ['cyan']
 female_color = ['magenta']
 
+# shows and hides "Mean height" that is only available for Basketball
 @app.callback(
     Output("sport-statistics", "options"),
     Input("sports-dropdown", "value")
@@ -46,7 +47,7 @@ def filtered_sports(sport, statistic, gender):
 
     if statistic == "gender":
         return sport_statistics.gender(sport).to_json()
-
+        
     if statistic == "age":
         return sport_statistics.age(sport).to_json()
     
@@ -58,8 +59,8 @@ def filtered_sports(sport, statistic, gender):
     Output("sports-graph", "figure"),   # return outputs to here
     Input("sports-data", "data"),       # gets data based on which country is chosen
     Input("sport-statistics", "value"), # select which statistic that should be shown
-    Input("sports-dropdown", "value"),   # get which sport that is chosen
-    Input("gender-selection", "value")
+    Input("sports-dropdown", "value"),  # get which sport that is selected
+    Input("gender-selection", "value")  # get which gender that is selected
 )
 def update_sports_graph(df_json, statistic, sport, gender):
     data = pd.read_json(df_json)
@@ -105,6 +106,7 @@ def update_sports_graph(df_json, statistic, sport, gender):
 
     # age distribution
     if statistic == "age":
+        # both genders
         if gender == "both":
             # ff.create_distplot needs the data as list of lists
             data_split = [data[data["Male"].notna()]["Male"], data[data["Female"].notna()]["Female"]]
@@ -114,12 +116,14 @@ def update_sports_graph(df_json, statistic, sport, gender):
                                     show_hist=False, 
                                     show_rug=False, 
                                     colors=line_colors)
+        # only male
         elif gender == "male":
             fig = ff.create_distplot([data[data["Male"].notna()]["Male"]], ["Male"], 
                                         curve_type="normal", 
                                         show_hist=False, 
                                         show_rug=False, 
                                         colors=male_color)
+        # only female
         else: 
            fig = ff.create_distplot([data[data["Female"].notna()]["Female"]], ["Female"], 
                                     curve_type="normal", 
@@ -145,6 +149,8 @@ def update_sports_graph(df_json, statistic, sport, gender):
     
     # mean height for Basketball
     if statistic == "athlete":
+        
+        # change color depending on gender
         if gender == "male":
             bar_color = px.colors.sequential.Teal
         elif gender == "female":
@@ -169,6 +175,7 @@ def update_sports_graph(df_json, statistic, sport, gender):
                
         return fig
 
+# show or hide the gender selection card
 @app.callback(
     Output("third-box", "children"),
     Input("sport-statistics", "value")
