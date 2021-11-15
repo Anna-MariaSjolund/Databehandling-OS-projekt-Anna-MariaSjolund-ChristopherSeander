@@ -37,13 +37,15 @@ class SportStatistics:
         medal_data = self.sport_and_year(sport)
         medal_data = unique_medals(medal_data)
 
+        # selects geneder
         if gender == "both":
             medal_data = medal_data["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
         elif gender == "male":
             medal_data = medal_data[medal_data["Sex"] == "M"]["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
         else:
             medal_data = medal_data[medal_data["Sex"] == "F"]["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
-        # prepair data for plot
+        
+        # prepare data for plot
         medal_data = pd.DataFrame(dict(NOC = medal_data.index, Medal = medal_data)).reset_index(drop=True)
         
         return medal_data
@@ -62,7 +64,7 @@ class SportStatistics:
         gender_data_f = gender_data[gender_data["Sex"] == "F"]
         gender_data_f = gender_data_f["Sex"].groupby(gender_data_f["Year"]).count()
 
-        # prepair data for plot
+        # prepare data for plot
         gender_data = pd.DataFrame(dict(Male = gender_data_m, Female = gender_data_f)).reset_index()
 
         return gender_data
@@ -87,6 +89,7 @@ class SportStatistics:
         # select basketball data from selected time period
         height_data = self.sport_and_year("Basketball")
 
+        # select gender
         if gender == "male":
             height_data = height_data[height_data["Sex"] == "M"]
         elif gender == "female":
@@ -102,7 +105,7 @@ class SportStatistics:
         # add mean height for players without a medal
         mean_hight_data["No medal"] = height_data[height_data["Medal"].isna()]["Height"].mean()
 
-        # prepair data for plot
+        # prepare data for plot
         mean_hight_data = pd.DataFrame(mean_hight_data.items(), columns=["Medal", "Mean height"])
         
         # shorten to two decimals
