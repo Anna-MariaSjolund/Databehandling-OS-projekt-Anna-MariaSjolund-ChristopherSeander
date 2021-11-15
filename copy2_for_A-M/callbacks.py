@@ -6,7 +6,7 @@ from dash.dependencies import Output, Input
 from app import app
 from noc_to_region import noc_to_region
 from layouts import sport_statistics
-from create_figures import PlotFigures
+import plot_figures
 
 sport_statistics_dict = dict(age = " Age distribution",
                             athlete = " Athlete info",
@@ -153,7 +153,7 @@ def update_toggle_switch(choice1, choice2, choice3):
         if choice2 == "participants" and choice3 != "percentage":
             return ("Normal / Log-scaled", False)
         else:
-            return ("Not available", True)
+            return ("Disabled", True)
 
 
 @app.callback(
@@ -166,15 +166,15 @@ def update_toggle_switch(choice1, choice2, choice3):
 def update_graph(choice1, choice2, choice3, choice4):
     if choice1 == "medals":
         if choice2 == "medals_year":
-            return PlotFigures.plot_medals_per_year(season=choice3, percentage=choice4)
+            return plot_figures.plot_medals_per_year(season=choice3, percentage=choice4)
         else:
-            return PlotFigures.plot_top_ten_sports_or_events(y_data=choice3, sport=choice4) #TODO: Change function, not interested in total here
+            return plot_figures.plot_top_ten_sports_or_events(y_data=choice3, sport=choice4) #TODO: Change function, not interested in total here
 
     else:
         if choice2 == "participants":
-            return PlotFigures.plot_participants(data_to_show=choice3, log_scaled=choice4)
+            return plot_figures.plot_participants(data_to_show=choice3, log_scaled=choice4)
         else:
-            return PlotFigures.plot_gender_distribution(choice3)
+            return plot_figures.plot_gender_distribution(choice3)
 
 #Dictionaries for Graph Dropdown
 medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")
