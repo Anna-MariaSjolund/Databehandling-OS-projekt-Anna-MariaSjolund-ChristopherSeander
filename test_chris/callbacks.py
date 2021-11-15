@@ -150,7 +150,7 @@ def update_sports_graph(df_json, statistic, sport, gender):
         elif gender == "female":
             bar_color = px.colors.sequential.Magenta
         else:
-            bar_color = ["px.colors.sequential.turbid"]
+            bar_color = px.colors.sequential.turbid
         
         fig = px.bar(data, 
                     x="Medal", 

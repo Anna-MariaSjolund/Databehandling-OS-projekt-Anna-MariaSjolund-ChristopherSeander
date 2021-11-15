@@ -29,7 +29,7 @@ sports_layout = html.Div([
                 style={"height": "100%"}
             ),
             xl=2,
-            md=4
+            md=3
         ),
         dbc.Col(
             dbc.Card(
@@ -47,7 +47,7 @@ sports_layout = html.Div([
         dbc.Col(
             id="third-box",
             xl=3,
-            md=3
+            md=4
         )
     ],
         className="mt-4"),
