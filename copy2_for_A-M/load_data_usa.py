@@ -90,17 +90,6 @@ def import_medals_data() -> pd.DataFrame:
     return medals_merged_data
 
 
-"""def import_medals_per_sport() -> pd.DataFrame:
-    medals = import_medals_won()
-    number_medals_sport = pd.DataFrame({"Total medals": medals["Medal"].groupby(medals["Sport"]).count()}).reset_index()
-
-    #This part is for plotting divided by the number of events
-    number_medals_sport["Number of events"] = number_medals_sport["Sport"].apply(lambda row: len(medals[medals["Sport"] == row]["Event"].unique()))
-    number_medals_sport["Medals per event"] = number_medals_sport["Total medals"]/number_medals_sport["Number of events"]
-
-    return number_medals_sport"""
-
-
 def import_medals_per_sport_and_event() -> list:
     """
     Creates two dataframes (sport and event) with the number of medals for the US.
@@ -134,7 +123,7 @@ def import_medals_per_sport_and_event() -> list:
     return return_data
 
 
-def import_top_ten_sports_and_events_all_medal_types():
+def import_top_ten_sports_and_events_all_medal_types() -> list:
     """Picks out the top ten sports and events for total, gold, silver and bronze.
     
     Returns
@@ -161,56 +150,35 @@ def import_top_ten_sports_and_events_all_medal_types():
     return return_data
 
 
-
-
-
-"""def import_top_ten_sports_average_medals_per_event() -> pd.DataFrame:
-    medals = import_medals_per_sport()
-    top_sports = medals.sort_values(by="Medals per event", ascending=False).reset_index(drop=True)
-    
-    return top_sports.head(10)"""
-
-
-"""def import_medals_top_ten_events() -> pd.DataFrame: 
-
-    #Import the data
-    medals_won_all = import_medals_won()
-
-    #Create dataset with the number of medals per event and sort the medals by Total Medals
-    medals_per_event = pd.DataFrame({"Total medals": medals_won_all["Medal"].groupby(medals_won_all["Event"]).count()}).reset_index()
-    top_ten_events = medals_per_event.sort_values(by="Total medals", ascending=False).reset_index(drop=True).head(10)
-    
-    #Creates new data frame with the different medal types for the top ten sports
-    list_of_events = list(top_ten_events["Event"])
-    event_medals_top_ten = pd.DataFrame({"Total medals": medals_won_all["Medal"].groupby(medals_won_all["Event"]).value_counts()}).reset_index()
-    event_medals_top_ten = event_medals_top_ten[event_medals_top_ten["Event"].isin(list_of_events)] #Reference: https://thispointer.com/python-pandas-select-rows-in-dataframe-by-conditions-on-multiple-columns/
-
-    #Change format
-    event_medals_top_ten = event_medals_top_ten.pivot_table("Total medals", ["Event"], "Medal").reset_index() #Reference: https://stackoverflow.com/questions/17298313/python-pandas-convert-rows-as-column-headers
-    event_medals_top_ten = event_medals_top_ten.rename_axis(None, axis=1) #Reference: https://stackoverflow.com/questions/29765548/remove-index-name-in-pandas
-    
-    #Merge the data
-    event_medals_top_ten = event_medals_top_ten[["Event", "Bronze", "Silver", "Gold"]]
-    event_medals_top_ten = pd.merge(event_medals_top_ten, top_ten_events, on="Event")
-    event_medals_top_ten = event_medals_top_ten.sort_values(by="Total medals", ascending=False).reset_index(drop=True)
-
-    return event_medals_top_ten"""      
-
-
-
 #PARTICIPANTS (INCLUDING GENDER) DATA
 
 def import_participants_data() -> pd.DataFrame:
+    """
+    Creates a dataframe with information about participants (number and gender) for US and the world.
+    The participants are only counted once per Olympic Games (even though they participated in several events).
+    
+    Returns
+    -------
+    participants_data:pd.DataFrame
+        A dataframe with information about participants (number and gender) for US and the world.
+        Columns: 
+            Year, Season, Games, Participants from USA, Total Number of Participants, 
+            American Participants (%), Number of Males from USA, Number of Females from USA, 
+            Total Number Males, Total Number Females, Female Participants from USA (%), 
+            Male Participants from USA (%), World Female Participants (%), World Male Participants (%)
+    """
+
+    #Import the data
     usa_data = import_full_data_usa()
     world_data = import_world_data()
 
-    #Remove people who participate in several events (the ID:s should be unique for each game)
+    #Removes people who participate in several events (the ID:s should be unique for each Olympic Game).
     usa_data_unique_ID = usa_data.drop_duplicates(subset=["Games", "ID"])
     world_data_unique_ID = world_data.drop_duplicates(subset=["Games", "ID"])
 
-    #Create two dataframes for the participants and count the number of people for each olympic game and then merge them
-    usa_participants = pd.DataFrame({"Participants from USA":usa_data_unique_ID["ID"].groupby(usa_data_unique_ID["Games"]).count()}).reset_index()
-    world_participants = pd.DataFrame({"Total Number of Participants":world_data_unique_ID["ID"].groupby(world_data_unique_ID["Games"]).count()}).reset_index()
+    #Creates two dataframes for the participants and count the number of people for each olympic game and then merge them
+    usa_participants = pd.DataFrame({"Participants from USA" : usa_data_unique_ID["ID"].groupby(usa_data_unique_ID["Games"]).count()}).reset_index()
+    world_participants = pd.DataFrame({"Total Number of Participants" : world_data_unique_ID["ID"].groupby(world_data_unique_ID["Games"]).count()}).reset_index()
     participants_data = pd.merge(usa_participants, world_participants, on="Games", how="left")
 
     #Split the Games column into two and create Year and Season 
@@ -219,10 +187,10 @@ def import_participants_data() -> pd.DataFrame:
     participants_data.insert(1, "Season", year_season[1])
     participants_data["Year"] = participants_data["Year"].astype(int)
 
-    #Calculates the percentage of american participants for each game
+    #Calculates the percentage of American participants for each game
     participants_data["American Participants (%)"] = ((participants_data["Participants from USA"]/participants_data["Total Number of Participants"])*100).round(1)
 
-    #Creates gender data
+    #Creates gender data for the US and the world
     gender_usa = pd.DataFrame({"Number of Males from USA":usa_data_unique_ID["Sex"][usa_data_unique_ID["Sex"] == "M"].groupby(usa_data_unique_ID["Games"]).count(),
                             "Number of Females from USA":usa_data_unique_ID["Sex"][usa_data_unique_ID["Sex"] == "F"].groupby(usa_data_unique_ID["Games"]).count()}).reset_index()
     gender_world = pd.DataFrame({"Total Number Males":world_data_unique_ID["Sex"][world_data_unique_ID["Sex"] == "M"].groupby(world_data_unique_ID["Games"]).count(),

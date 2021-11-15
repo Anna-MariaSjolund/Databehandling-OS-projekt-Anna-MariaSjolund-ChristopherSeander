@@ -2,7 +2,22 @@ import load_data_usa
 import plotly.graph_objects as go
 import plotly_express as px
 
-def plot_medals_per_year(season="all", percentage=True):
+def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
+    """
+    Creates a plotly line graph, showing the US winnings in the Olympic Games.
+
+    Parameters
+    ----------
+    season:str
+        The season to be shown, i.e. all, summer or winter (default all).
+    percentage:bool
+        If the medals should be shown in percentage (else in numbers; default True).
+
+    Returns
+    -------
+    fig:px.line
+        A line graph figure with year on the x-axis and medals on the y-axis.
+    """
 
     #Imports the data
     medals_data = load_data_usa.import_medals_data()
@@ -65,63 +80,88 @@ def plot_medals_per_year(season="all", percentage=True):
     #Sets the hovertemplate
     fig.update_traces(hovertemplate=hover_template)
 
-    #Sets the ticks
-    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+    #Sets the ticks and formats the background
+    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)), 
+                    template="plotly_dark", 
+                    paper_bgcolor= "rgba(0, 0, 0, 0)", 
+                    plot_bgcolor= "rgba(0, 0, 0, 0)")
 
-    fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+    #Formats the axes                
+    fig.update_xaxes(gridcolor="gray", zerolinecolor="gray")
+    fig.update_yaxes(gridcolor="gray", zerolinecolor="gray")
 
     return fig
 
-#Maybe change it to Bronze, Silver, Gold, All medals, Total number
-#def plot_top_ten_sports_or_events(sport_or_event="sport", y_data=["Bronze", "Silver", "Gold"], total=False):
-def plot_top_ten_sports_or_events(y_data="all", sport=True):
+def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
+    """
+    Creates a plotly bar graph, showing the top sports (most medals) for the US.
 
+    Parameters
+    ----------
+    y_data:str
+        The medals to be shown (default all).
+        This should be either:
+            all: Showing gold, silver and bronze for the ten sports/events with most medals in total.
+            Gold: Showing the ten sports/events with the most number of golds.
+            Silver: Showing the ten sports/events with the most number of silvers.
+            Bronze: Showing the ten sports/events with the most number of bronzes.
+            total: Showing the total number of medals for the ten sports/events with most medals.
+    sport:bool
+        If sport (default) should be shown (if False, event will be shown).
+
+    Returns
+    -------
+    fig:px.bar
+        A bar graph figure with sport or event on the x-axis and number of medals on the y-axis.
+    """
+
+    #Imports the data
     sport_data, event_data = load_data_usa.import_top_ten_sports_and_events_all_medal_types()
     sport_total, sport_gold, sport_silver, sport_bronze = sport_data
     event_total, event_gold, event_silver, event_bronze = event_data
 
+    #Select the datasets
+    if (y_data == "all" and sport == True) or (y_data == "total" and sport == True):
+        dataset = sport_total
+    elif (y_data == "all" and sport == False) or (y_data == "total" and sport == False):
+        dataset = event_total 
+    elif y_data == "Gold" and sport == True:
+        dataset = sport_gold
+    elif y_data == "Gold" and sport == False:
+        dataset = event_gold
+    elif y_data == "Silver" and sport == True:
+        dataset = sport_silver
+    elif y_data == "Silver" and sport == False:
+        dataset = event_silver
+    elif y_data == "Bronze" and sport == True:
+        dataset = sport_bronze
+    elif y_data == "Bronze" and sport == False:
+        dataset = event_bronze
+
+    #Sets the x-data
     if sport == True:
         x_data = "Sport"
-        title="Top Ten Sports for USA in the Olympic Games"
     else:
         x_data = "Event"
-        title="Top Ten Events for USA in the Olympic Games"
 
-    if y_data == "all":
-        if sport == True:
-            dataset=sport_total
-        else:
-            dataset=event_total
-        y_data = ["Bronze", "Silver", "Gold"]
-        bar_colors = ["#CD7F32", "#C0C0C0", "#FFD700"] 
-    elif y_data == "Bronze":
-        if sport == True:
-            dataset=sport_bronze
-        else:
-            dataset=event_bronze
-        bar_colors = ["#CD7F32"]
-    elif y_data == "Silver":
-        if sport == True:
-            dataset=sport_silver
-        else:
-            dataset=event_silver
-        bar_colors = ["#C0C0C0"]
-    elif y_data == "Gold":
-        if sport == True:
-            dataset=sport_gold
-        else:
-            dataset=event_gold
-        bar_colors = ["#FFD700"]
+    #Settings for y_data and bar_colors
+    colors_dict = dict(Bronze="#CD7F32", Silver="#C0C0C0", Gold="#FFD700")
+    if y_data == "all": 
+        y_data = ["Bronze", "Silver", "Gold"]  
+        bar_colors = ["#CD7F32", "#C0C0C0", "#FFD700"]
     elif y_data == "total":
-        if sport == True:
-            dataset=sport_total
-        else:
-            dataset=event_total
         y_data = "Total medals"
         bar_colors = ["OliveDrab"]
-        
+    else:
+        bar_colors = [colors_dict[y_data]]
+
+    #Sets the title
+    if y_data == "all" or y_data == "total":
+        title = f"Top Ten {x_data}s for USA in the Olympic Games"
+    else:    
+        title = f"{x_data}s with the Most {y_data} Medals for USA in the Olympic Games"
+
+    #Creates the plot
     fig = px.bar(dataset, 
                     x=x_data, 
                     y=y_data, 
@@ -129,19 +169,38 @@ def plot_top_ten_sports_or_events(y_data="all", sport=True):
                     title=title,
                     barmode="group", 
                     color_discrete_sequence=bar_colors, 
-                    template="plotly_white")
+                    )
     
+    #Settings for axis and layout
     fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
     fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
     fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
             
     return fig
 
-def plot_participants(data_to_show = "all", log_scaled=True):
 
+def plot_participants(data_to_show = "all", log_scaled=True):
+    """
+    Creates a plotly line graph, showing the number of US participants in the Olympic Games.
+
+    Parameters
+    ----------
+    season:str
+        The season to be shown, i.e. all, summer or winter (default all).
+    log_scaled:bool
+        If the medals should be shown log_scaled or not (default True).
+
+    Returns
+    -------
+    fig:px.line
+        A line graph figure with year on the x-axis and number of participants on the y-axis.
+    """
+
+    #Import the data and pick out the initial y_data
     participants_data = load_data_usa.import_participants_data()
     y_data = ["Participants from USA", "Total Number of Participants"]
 
+    #Settings depedning on the data_to_show
     if data_to_show == "all":
         color="Season"
         line_color = ["OrangeRed", "RoyalBlue"]
@@ -155,17 +214,20 @@ def plot_participants(data_to_show = "all", log_scaled=True):
         line_color=["CornflowerBlue", "Navy"]
         title="Participants from the USA and the World in the Winter Olympic Games"
     
+    #Sets the color to None for all options, except for the all-option.
     if data_to_show == "summer" or data_to_show == "winter" or data_to_show == "percentage":
         color=None
 
+    #Sets the y-label
     if log_scaled == True:
         y_label = "Number of Participants (log-scaled)"
     else:
         y_label = "Number of Participants"
 
+    #Settings for the percentage option (overwrites some previous specified values)
     if data_to_show == "percentage":
         y_data = "American Participants (%)"
-        log_scaled = False
+        log_scaled = False 
         line_color=["OliveDrab"]
         title = "American Participants in the Olympic Games in Percentage"
 
@@ -180,19 +242,38 @@ def plot_participants(data_to_show = "all", log_scaled=True):
             markers=True,
             )
 
-    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+    #Sets the ticks and formats the background
+    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)), 
+                    template="plotly_dark", 
+                    paper_bgcolor= "rgba(0, 0, 0, 0)", 
+                    plot_bgcolor= "rgba(0, 0, 0, 0)")
 
-    fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+    #Formats the axes                
+    fig.update_xaxes(gridcolor="gray", zerolinecolor="gray")
+    fig.update_yaxes(gridcolor="gray", zerolinecolor="gray")
 
     return fig
 
 
 def plot_gender_distribution(season="all"):
+    """
+    Creates a plotly line graph, showing the gender distribution for US and the world.
+
+    Parameters
+    ----------
+    season:str
+        The season to be shown, i.e. all, summer or winter (default all).
+
+    Returns
+    -------
+    fig:px.line
+        A line graph figure with year on the x-axis and the gender distribution on the y-axis.
+    """
     
+    #Import the data
     participants_data = load_data_usa.import_participants_data()
 
+    #Sets the title and overwrites the participants_data for summer and winter
     if season == "all":
         title = "Gender Distribution among Participants from USA and the World at the Olympic Games"
     elif season == "summer":
@@ -202,6 +283,7 @@ def plot_gender_distribution(season="all"):
         participants_data = participants_data[participants_data["Season"] == "Winter"]
         title = "Gender Distribution among Participants from USA and the World at the Winter Olympic Games"
 
+    #Creates the plot
     fig = px.line(participants_data, 
             x="Year", 
             y=["Female Participants from USA (%)", "Male Participants from USA (%)", "World Female Participants (%)", "World Male Participants (%)"], 
@@ -211,10 +293,14 @@ def plot_gender_distribution(season="all"):
             markers=True, 
             )
 
-    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)))
+    #Sets the ticks and formats the background
+    fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)), 
+                    template="plotly_dark", 
+                    paper_bgcolor= "rgba(0, 0, 0, 0)", 
+                    plot_bgcolor= "rgba(0, 0, 0, 0)")
 
-    fig.update_xaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_yaxes(gridcolor='gray', zerolinecolor='gray')
-    fig.update_layout(template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
+    #Formats the axes                
+    fig.update_xaxes(gridcolor="gray", zerolinecolor="gray")
+    fig.update_yaxes(gridcolor="gray", zerolinecolor="gray")
 
     return fig
