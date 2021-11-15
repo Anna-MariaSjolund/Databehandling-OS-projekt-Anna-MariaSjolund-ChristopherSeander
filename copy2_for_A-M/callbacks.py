@@ -138,6 +138,7 @@ def update_radio_buttons(choice1, choice2):
 
 @app.callback(
     Output("my-toggle-switch", component_property="label"),
+    Output("my-toggle-switch", component_property="disabled"),
     Input("usa-dropdown", "value"),
     Input("graph-dropdown", "value"),
     Input("radio-settings", "value")
@@ -145,14 +146,15 @@ def update_radio_buttons(choice1, choice2):
 def update_toggle_switch(choice1, choice2, choice3):
     if choice1 == "medals":
         if choice2 == "medals_year":
-            return dict(label="Amount / Percentage") #TODO: Fix spaces
+            return ("Number / Percentage", False) #TODO: Fix spaces
         else:
-            return dict(label="Sport .... Event")
+            return ("Event / Sport", False)
     else:
-        if choice2 == "participants":
-            return dict(label="Normal / Log-scaled")
+        if choice2 == "participants" and choice3 != "percentage":
+            return ("Normal / Log-scaled", False)
         else:
-            return dict(label="No choice")
+            return ("Not available", True)
+
 
 @app.callback(
     Output("usa-graph", "figure"),
@@ -166,11 +168,11 @@ def update_graph(choice1, choice2, choice3, choice4):
         if choice2 == "medals_year":
             return PlotFigures.plot_medals_per_year(season=choice3, percentage=choice4)
         else:
-            return PlotFigures.plot_top_ten_sports_or_events(y_data=[choice3], total=choice4) #TODO: Change function, not interested in total here
+            return PlotFigures.plot_top_ten_sports_or_events(y_data=choice3, sport=choice4) #TODO: Change function, not interested in total here
 
     else:
         if choice2 == "participants":
-            return PlotFigures.plot_participants(choice3, log_scaled=choice4)
+            return PlotFigures.plot_participants(data_to_show=choice3, log_scaled=choice4)
         else:
             return PlotFigures.plot_gender_distribution(choice3)
 
@@ -180,6 +182,6 @@ participants_options_dict = dict(participants = "Participants from USA and the W
 
 #Dictionaries for Radio Buttons
 medals_per_year_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #percentage="Percentage or Total")
-medals_per_sport_options_dict = dict(Gold="Gold", Silver="Silver", Bronze="Bronze") #sport_or_event="Sport or Event?", 
-plot_participants_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #, percentage="Percentage or Total", log_scaled="Yes or no?")
+medals_per_sport_options_dict = dict(all = "All medals", Gold = "Gold", Silver = "Silver", Bronze = "Bronze", total = "Total number of medals") #sport_or_event="Sport or Event?", 
+plot_participants_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer", percentage="American Participants (%)") #, percentage="Percentage or Total", log_scaled="Yes or no?")
 gender_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer")

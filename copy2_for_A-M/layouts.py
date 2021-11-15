@@ -15,63 +15,62 @@ usa_options_dict = dict(medals = "Medals", participants = "Participants")
 usa_options_dropdown = [{"label" : label, "value" : value} for value, label in usa_options_dict.items()]
 
 usa_layout = html.Div([
-        dbc.Row([
-        html.H1("USA in the Olympic Games"),
-        ]),
-        dbc.Row([
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        dcc.Dropdown(
-                            id="usa-dropdown",
-                            options=usa_options_dropdown,
-                            value="medals"
-                        )
-                    )                       
-                )
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        dcc.Dropdown(
-                            id="graph-dropdown",
-                            value="medals_year"
+            dbc.Row([
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            dcc.Dropdown(
+                                id="usa-dropdown",
+                                options=usa_options_dropdown,
+                                value="medals"
+                            )
+                        )                       
+                    )
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            dcc.Dropdown(
+                                id="graph-dropdown",
+                                value="medals_year"
+                            )
                         )
                     )
-                )
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        dcc.RadioItems(
-                            id="radio-settings", 
-                            value="all"
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            dcc.RadioItems(
+                                id="radio-settings", 
+                                value="all"
+                            )
                         )
                     )
-                )
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody(
-                        daq.ToggleSwitch(
-                            id="my-toggle-switch",
-                            value=True,
-                            size=40,
-                            color="green",
-                            labelPosition="bottom"
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody(
+                            daq.ToggleSwitch(
+                                id="my-toggle-switch",
+                                value=True,
+                                size=40,
+                                color="CornFlowerBlue",
+                                labelPosition="bottom"
+                            )
                         )
                     )
-                )
-            )
-        ]),
-        dbc.Card(
-            dbc.CardBody(
-                dcc.Graph(id="usa-graph")
-            )
-        ) 
-    ])
+                ),
+            ],
+            className="mt-2"
+            ),
+            dbc.Card(
+                dbc.CardBody(
+                    dcc.Graph(id="usa-graph")
+                ),
+            className="mt-2" ) 
+        ])
 
-    
+        
 
 
 sports_layout = html.Div([

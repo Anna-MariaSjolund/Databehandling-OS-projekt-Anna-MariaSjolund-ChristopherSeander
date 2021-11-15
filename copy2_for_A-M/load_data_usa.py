@@ -12,7 +12,7 @@ class LoadDataUSA:
         return usa_data 
     
     @staticmethod
-    def medals_won():
+    def medals_won(): 
         usa_data = LoadDataUSA.full_data()
         medals = usa_data.dropna(subset=["Medal"])
         medals = usa_data.drop_duplicates(subset=["Event", "Games", "Medal"])
@@ -30,6 +30,7 @@ class LoadDataUSA:
         year_season = medals_usa["Games"].str.split(" ", n = 1, expand = True) #Splits each string in the Games column into two columns. Reference: https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
         medals_usa.insert(0, "Year", year_season[0])
         medals_usa.insert(1, "Season", year_season[1])
+        medals_usa["Year"] = medals_usa["Year"].astype(int)
 
         #Counting the total number of medals
         medals_total = pd.DataFrame({"Medals total": sport_data["Medal"].groupby(sport_data["Games"]).count()})
@@ -127,6 +128,7 @@ class LoadDataUSA:
         year_season = participants_data["Games"].str.split(" ", n = 1, expand = True) #Splits each string in the Games column into two columns. Reference: https://www.geeksforgeeks.org/python-pandas-split-strings-into-two-list-columns-using-str-split/
         participants_data.insert(0, "Year", year_season[0])
         participants_data.insert(1, "Season", year_season[1])
+        participants_data["Year"] = participants_data["Year"].astype(int)
   
         #Calculates the percentage of american participants for each game
         participants_data["American Participants (%)"] = ((participants_data["Participants from USA"]/participants_data["Total Number of Participants"])*100).round(1)

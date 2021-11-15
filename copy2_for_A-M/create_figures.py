@@ -78,27 +78,27 @@ class PlotFigures:
         return fig
     
     #Maybe change it to Bronze, Silver, Gold, All medals, Total number
-    def plot_top_ten_sports_or_events(sport_or_event="sport", y_data=["Bronze", "Silver", "Gold"], total=False):
-
-        if sport_or_event == "sport":
+    #def plot_top_ten_sports_or_events(sport_or_event="sport", y_data=["Bronze", "Silver", "Gold"], total=False):
+    def plot_top_ten_sports_or_events(y_data="all", sport=True):
+        if sport == True:
             dataset = LoadDataUSA.medals_top_ten_sports()
             x_data = "Sport"
             title="Top Ten Sports for USA in the Olympic Games"
-        elif sport_or_event == "event":
+        else:
             dataset = LoadDataUSA.medals_top_ten_events()
             x_data = "Event"
             title="Top Ten Events for USA in the Olympic Games"
 
-        if total == False:
-            bar_colors = []
-            for medal in y_data:
-                if medal == "Bronze":
-                    bar_colors.append("#CD7F32")
-                elif medal == "Silver":
-                    bar_colors.append("#C0C0C0")
-                elif medal == "Gold":
-                    bar_colors.append("#FFD700")
-        else:
+        if y_data == "all":
+            y_data = ["Bronze", "Silver", "Gold"]
+            bar_colors = ["#CD7F32", "#C0C0C0", "#FFD700"]
+        elif y_data == "Bronze":
+            bar_colors = ["#CD7F32"]
+        elif y_data == "Silver":
+            bar_colors = ["#C0C0C0"]
+        elif y_data == "Gold":
+            bar_colors = ["#FFD700"]
+        elif y_data == "total":
             y_data = "Total medals"
             bar_colors = ["OliveDrab"]
             
@@ -117,28 +117,26 @@ class PlotFigures:
                 
         return fig
 
-        
-
     @staticmethod
-    def plot_participants(season="all", log_scaled=True, percentage=False):
+    def plot_participants(data_to_show = "all", log_scaled=True):
 
         participants_data = LoadDataUSA.participants_data()
         y_data = ["Participants from USA", "Total Number of Participants"]
 
-        if season == "all":
+        if data_to_show == "all":
             color="Season"
             line_color = ["OrangeRed", "RoyalBlue"]
             title="Participants from the USA and the World in the Olympic Games"
-        elif season == "summer":
+        elif data_to_show == "summer":
             participants_data = participants_data[participants_data["Season"] == "Summer"]
             line_color = ["IndianRed", "DarkRed"]
             title="Participants from the USA and the World in the Summer Olympic Games"
-        elif season == "winter":
+        elif data_to_show == "winter":
             participants_data = participants_data[participants_data["Season"] == "Winter"]
             line_color=["CornflowerBlue", "Navy"]
             title="Participants from the USA and the World in the Winter Olympic Games"
-
-        if season == "summer" or season == "winter" or percentage == True:
+        
+        if data_to_show == "summer" or data_to_show == "winter" or data_to_show == "percentage":
             color=None
 
         if log_scaled == True:
@@ -146,9 +144,11 @@ class PlotFigures:
         else:
             y_label = "Number of Participants"
 
-        if percentage == True:
+        if data_to_show == "percentage":
             y_data = "American Participants (%)"
             log_scaled = False
+            line_color=["OliveDrab"]
+            title = "American Participants in the Olympic Games in Percentage"
 
         fig = px.line(participants_data, 
                 x="Year", 
