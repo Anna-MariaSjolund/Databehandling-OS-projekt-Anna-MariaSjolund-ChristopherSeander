@@ -25,7 +25,7 @@ app.layout = dbc.Container([
                         ])
         )
     ], className="mt-3"),
-    html.Div(id="content")
+    html.Div(id="content"),
 ])
 
 @app.callback(
