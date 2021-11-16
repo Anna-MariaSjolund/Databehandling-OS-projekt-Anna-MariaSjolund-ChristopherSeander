@@ -6,7 +6,7 @@ from unique_medals import unique_medals
 class SportStatistics:
 
     def __init__(self) -> None:
-        read_data = pd.read_csv("../Data/athlete_events.csv")
+        read_data = pd.read_csv("../Data/athlete_events_anonymized.csv")
         sports = read_data[read_data["Sport"].isin(["Alpine Skiing", "Basketball", "Gymnastics", "Rhythmic Gymnastics"])]
 
         # Running does not have its own sport tag, its under Atheltics
