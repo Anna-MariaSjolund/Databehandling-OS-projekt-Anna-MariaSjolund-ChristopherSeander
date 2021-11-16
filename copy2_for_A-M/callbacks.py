@@ -106,82 +106,94 @@ def update_sports_graph(df_json, statistic, sport):
         fig.update_layout(title=f"Mean height of players based on which medal", template='plotly_dark', paper_bgcolor= 'rgba(0, 0, 0, 0)', plot_bgcolor= 'rgba(0, 0, 0, 0)')
         return fig
 
+
+
+
 #A-Ms part
 
+#Dictionaries for second dropdown
+medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")
+participants_options_dict = dict(participants = "Participants from USA and the world", gender="Gender distribution for USA and the world")
+
+#Dictionaries for radio buttons
+medals_per_year_options_dict = dict(all = "All seasons", summer = "Summer", winter = "Winter")
+medals_per_sport_options_dict = dict(all = "All medals", total = "Total number of medals", Gold = "Gold", Silver = "Silver", Bronze = "Bronze")
+plot_participants_options_dict = dict(All = "All seasons", Summer = "Summer", Winter = "Winter", Percentage = "American Participants (%)")
+gender_options_dict = dict(all = "All seasons", summer = "Summer", winter = "Winter")
+
 @app.callback(
-    Output("graph-dropdown", "options"),
+    Output("second-dropdown", "options"),
     Input("usa-dropdown", "value")
 )
-def update_graph_dropdown(choice):
+def update_second_dropdown(choice):
+    """Updates the second dropdown, based on the choice in the first dropdown."""
+    
     if choice == "medals":
         return [{"label" : medals_options_dict[index], "value" : index} for index in medals_options_dict]
     elif choice == "participants":
         return [{"label" : participants_options_dict[index], "value" : index} for index in participants_options_dict]
     
+
 @app.callback(
     Output("radio-settings", "options"),
     Input("usa-dropdown", "value"),
-    Input("graph-dropdown", "value")
+    Input("second-dropdown", "value")
 )
-def update_radio_buttons(choice1, choice2):
-    
-    if choice1 == "medals":
-        if choice2 == "medals_year":
+def update_radio_buttons(usa_dropdown_choice, second_dropdown_choice):
+    """Updates the radio buttons, based on the choice in the second dropdown."""
+
+    if usa_dropdown_choice == "medals":
+        if second_dropdown_choice == "medals_year":
             return [{"label" : label, "value" : value} for value, label in medals_per_year_options_dict.items()]
         else:
             return [{"label" : label, "value" : value} for value, label in medals_per_sport_options_dict.items()]
     else:
-        if choice2 == "participants":
+        if second_dropdown_choice == "participants":
             return [{"label" : label, "value" : value} for value, label in plot_participants_options_dict.items()]
         else :
             return [{"label" : label, "value" : value} for value, label in gender_options_dict.items()]
+
 
 @app.callback(
     Output("my-toggle-switch", component_property="label"),
     Output("my-toggle-switch", component_property="disabled"),
     Input("usa-dropdown", "value"),
-    Input("graph-dropdown", "value"),
+    Input("second-dropdown", "value"),
     Input("radio-settings", "value")
 )
-def update_toggle_switch(choice1, choice2, choice3):
-    if choice1 == "medals":
-        if choice2 == "medals_year":
-            return ("Number / Percentage", False) #TODO: Fix spaces
+def update_toggle_switch(usa_dropdown_choice, second_dropdown_choice, radio_button_choice):
+    """Updates the toggle switch labels or disables it."""
+
+    if usa_dropdown_choice == "medals":
+        if second_dropdown_choice == "medals_year":
+            return ("Number / Percentage", False) #First return value in the tuple is label and the second value is disabled - True or False
         else:
             return ("Event / Sport", False)
     else:
-        if choice2 == "participants" and choice3 != "Percentage":
-            return ("Normal / Log-scaled", False)
+        if second_dropdown_choice == "participants" and radio_button_choice != "Percentage":
+            return ("Ordinary / Log scale", False)
         else:
-            return ("Disabled", True)
+            return ("Not available", True) 
 
 
 @app.callback(
     Output("usa-graph", "figure"),
     Input("usa-dropdown", "value"),
-    Input("graph-dropdown", "value"),
+    Input("second-dropdown", "value"),
     Input("radio-settings", "value"),
     Input("my-toggle-switch", "value")
 )
-def update_graph(choice1, choice2, choice3, choice4):
-    if choice1 == "medals":
-        if choice2 == "medals_year":
-            return plot_figures.plot_medals_per_year(season=choice3, percentage=choice4)
+def update_graph(usa_dropdown_choice, second_dropdown_choice, radio_buttons_choice, switch_choice):
+    """Updates the graph, using the input values from radio buttons and toggle switch."""
+
+    if usa_dropdown_choice == "medals":
+        if second_dropdown_choice == "medals_year":
+            return plot_figures.plot_medals_per_year(season=radio_buttons_choice, percentage=switch_choice)
         else:
-            return plot_figures.plot_top_ten_sports_or_events(y_data=choice3, sport=choice4) #TODO: Change function, not interested in total here
+            return plot_figures.plot_top_ten_sports_or_events(y_data=radio_buttons_choice, sport=switch_choice) #TODO: Change function, not interested in total here
 
     else:
-        if choice2 == "participants":
-            return plot_figures.plot_participants(data_to_show=choice3, log_scaled=choice4)
+        if second_dropdown_choice == "participants":
+            return plot_figures.plot_participants(data_to_show=radio_buttons_choice, log_scaled=switch_choice)
         else:
-            return plot_figures.plot_gender_distribution(choice3)
-
-#Dictionaries for Graph Dropdown
-medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")
-participants_options_dict = dict(participants = "Participants from USA and the World", gender="Gender distribution for USA and the world")
-
-#Dictionaries for Radio Buttons
-medals_per_year_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #percentage="Percentage or Total")
-medals_per_sport_options_dict = dict(all = "All medals", Gold = "Gold", Silver = "Silver", Bronze = "Bronze", total = "Total number of medals") #sport_or_event="Sport or Event?", 
-plot_participants_options_dict = dict(All = "All seasons", Winter="Winter", Summer="Summer", Percentage="American Participants (%)") #, percentage="Percentage or Total", log_scaled="Yes or no?")
-gender_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer")
+            return plot_figures.plot_gender_distribution(radio_buttons_choice)

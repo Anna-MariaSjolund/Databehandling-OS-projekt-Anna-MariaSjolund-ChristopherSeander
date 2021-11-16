@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 
 from app import app
 from layouts import usa_layout, sports_layout
-import callbacks
+import callbacks #Do we need this?
 
 app.layout = dbc.Container([
     html.H1(id="title", className="pt-3"),
@@ -41,4 +41,4 @@ def render_content(tab):
         return sports_layout, "Sports Statistics in the Olympic Games"
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True) #Remove this

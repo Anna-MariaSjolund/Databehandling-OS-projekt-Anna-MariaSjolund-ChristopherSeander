@@ -61,7 +61,7 @@ def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
     else:
         y_data = "Medals USA"
         hover_template = "<br>Year: %{x}<br>Number of Medals: %{y}<extra></extra>"
-        labels={"Medals USA":"Number of medals"}
+        labels={"Medals USA":"Number of Medals"}
 
     #Creates the figure
     fig = px.line(dataset, 

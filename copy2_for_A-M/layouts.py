@@ -11,6 +11,7 @@ sport_options_dropdown = [{"label" : sport, "value" : sport} for sport in sport_
 
 #A-Ms part USA
 
+#Creates the options for the first dropdown (Medals or Participants)
 usa_options_dict = dict(medals = "Medals", participants = "Participants")
 usa_options_dropdown = [{"label" : label, "value" : value} for value, label in usa_options_dict.items()]
 
@@ -18,35 +19,45 @@ usa_layout = html.Div([
             dbc.Row([
                 dbc.Col(
                     dbc.Card(
-                        dbc.CardBody(
+                        dbc.CardBody([
+                            html.H5("Category:"),
                             dcc.Dropdown(
                                 id="usa-dropdown",
                                 options=usa_options_dropdown,
-                                value="medals"
-                            )
-                        )                       
-                    )
-                ),
+                                value="medals")
+                            ], 
+                            style={"height": "7rem","padding":"1rem"}
+                            )                    
+                        ), 
+                    width=2
+                    ),
                 dbc.Col(
                     dbc.Card(
-                        dbc.CardBody(
+                        dbc.CardBody([
+                            html.H5("Data:"),
                             dcc.Dropdown(
-                                id="graph-dropdown",
-                                value="medals_year"
+                                id="second-dropdown",
+                                value="medals_year"),
+                            ],
+                            style={"height": "7rem"}
                             )
-                        )
-                    )
-                ),
+                        ), 
+                    width=4
+                    ),
                 dbc.Col(
                     dbc.Card(
-                        dbc.CardBody(
+                        dbc.CardBody([
+                            html.H5("Graph Settings:"),
                             dcc.RadioItems(
                                 id="radio-settings", 
-                                value="all"
+                                value="all",
+                                style={"display" : "inline-block", "width" : "80%"}) #Reference: https://social.msdn.microsoft.com/Forums/en-US/9880882b-212a-4bc1-8932-8676784e4299/exact-alignment-of-radio-buttons-in-rows-and-columns?forum=asphtmlcssjavascript
+                                ],
+                            style={"height": "7rem"},
                             )
-                        )
-                    )
-                ),
+                        ), 
+                    width=4
+                    ),
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody(
@@ -55,18 +66,18 @@ usa_layout = html.Div([
                                 value=True,
                                 size=40,
                                 color="CornFlowerBlue",
-                                labelPosition="bottom"
+                                labelPosition="bottom"),
+                            style={"height": "7rem", "padding-top":"30px"} #Reference: https://www.w3schools.com/cssref/pr_padding-top.asp
                             )
-                        )
-                    )
-                ),
-            ],
-            className="mt-2"
+                        ), 
+                    width=2
+                )],
+                className="mt-2"
             ),
             dbc.Card(
                 dbc.CardBody(
                     dcc.Graph(id="usa-graph")
-                ),
+                    ),
             className="mt-2" ) 
         ])
 
