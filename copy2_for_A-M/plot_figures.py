@@ -1,6 +1,6 @@
 import load_data_usa
 import plotly.graph_objects as go
-import plotly_express as px
+import plotly_express as px 
 
 def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
     """
@@ -8,21 +8,21 @@ def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
 
     Parameters
     ----------
-    season:str
+    season : str
         The season to be shown, i.e. all, summer or winter (default all).
-    percentage:bool
-        If the medals should be shown in percentage (else in numbers; default True).
+    percentage : bool
+        If the medals should be shown in percentage of the total number of medals (else in numbers; default True).
 
     Returns
     -------
-    fig:px.line
+    fig : px.line
         A line graph figure with year on the x-axis and medals on the y-axis.
     """
 
     #Imports the data
-    medals_data = load_data_usa.import_medals_data()
+    medals_data = load_data_usa.import_medals_count()
 
-    #Selects the data, sets the line color, color (if two lines) and creates data for when OG was hosted by USA
+    #Selects the data, sets the line color, color (if two lines) and creates data for when the Olympic Games was hosted by USA.
     if season == "all":
         dataset=medals_data
         line_color=["OrangeRed", "RoyalBlue"]
@@ -54,14 +54,14 @@ def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
         title = "Number of Medals Won by the USA in the Winter Olympic Games"
 
     #Sets the y-data, hover_template and labels based on if values should be shown in percentage or not
-    if percentage==True:
+    if percentage == True:
         y_data = "Percentage of Medals"
         hover_template = "<br>Year: %{x}<br>Percentage of Medals: %{y:.1f}%<extra></extra>"
         labels=None
     else:
         y_data = "Medals USA"
         hover_template = "<br>Year: %{x}<br>Number of Medals: %{y}<extra></extra>"
-        labels={"Medals USA":"Number of Medals"}
+        labels = {"Medals USA" : "Number of Medals"}
 
     #Creates the figure
     fig = px.line(dataset, 
@@ -95,13 +95,14 @@ def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
 
     return fig
 
+
 def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
     """
     Creates a plotly bar graph, showing the top sports (most medals) for the US.
 
     Parameters
     ----------
-    y_data:str
+    y_data : str
         The medals to be shown (default all).
         This should be either:
             all: Showing gold, silver and bronze for the ten sports/events with most medals in total.
@@ -109,12 +110,12 @@ def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
             Silver: Showing the ten sports/events with the most number of silvers.
             Bronze: Showing the ten sports/events with the most number of bronzes.
             total: Showing the total number of medals for the ten sports/events with most medals.
-    sport:bool
+    sport : bool
         If sport (default) should be shown (if False, event will be shown).
 
     Returns
     -------
-    fig:px.bar
+    fig : px.bar
         A bar graph figure with sport or event on the x-axis and number of medals on the y-axis.
     """
 
@@ -187,16 +188,16 @@ def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
     return fig
 
 
-def plot_participants(data_to_show = "All", log_scaled=True):
+def plot_participants(data_to_show:str="All", log_scaled:bool=True):
     """
-    Creates a plotly line graph, showing the number of US participants in the Olympic Games.
+    Creates a plotly line graph, showing the number of US participants in the Olympic Games per year.
 
     Parameters
     ----------
-    season:str
-        The season to be shown, i.e. all, summer or winter (default all).
-    log_scaled:bool
-        If the medals should be shown log_scaled or not (default True).
+    season : str
+        The season to be shown, i.e. All, Summer or Winter (default All).
+    log_scaled : bool
+        If the medals should be shown log-scaled or not (default True).
 
     Returns
     -------
@@ -281,7 +282,7 @@ def plot_participants(data_to_show = "All", log_scaled=True):
                 color_discrete_sequence=line_color,
                 markers=True,
                 log_y=log_scaled,
-                title=title, #Title has to be set here as well (even though updated below), otherwise the grid is not evenly spaced for log-scaled Winter
+                title=title, #title has to be set here as well (even though updated below), otherwise the grid is not evenly spaced for log-scaled Winter
                 labels={"variable":"Participant Group", "value":"Number of Participants"}
                 )
 
@@ -290,7 +291,7 @@ def plot_participants(data_to_show = "All", log_scaled=True):
     fig.update_layout(title=title, yaxis_title=y_label, legend_title="Participant Group")
 
     #Log-scaling
-    if log_scaled == True and data_to_show == "All" and data_to_show != "Percentage":
+    if log_scaled == True and data_to_show == "All":
         fig.update_yaxes(type="log")
 
     #Sets the ticks and formats the background
@@ -312,12 +313,12 @@ def plot_gender_distribution(season="all"):
 
     Parameters
     ----------
-    season:str
+    season : str
         The season to be shown, i.e. all, summer or winter (default all).
 
     Returns
     -------
-    fig:px.line
+    fig : px.line
         A line graph figure with year on the x-axis and the gender distribution on the y-axis.
     """
     
@@ -339,11 +340,11 @@ def plot_gender_distribution(season="all"):
             x="Year", 
             y=["World Male Participants (%)", "Male Participants from USA (%)", "World Female Participants (%)", "Female Participants from USA (%)"], 
             title=title, 
-            labels={"value":"Percentage", "variable": "Participant Group"}, 
+            labels={"value" : "Percentage", "variable" : "Participant Group"}, 
             color_discrete_sequence=["RoyalBlue", "LightSteelBlue", "DeepPink", "LightPink"],
-            markers=True, 
-            )
+            markers=True)
 
+    #Sets the line width and the marker size
     fig.update_traces(line=dict(width=3), marker=dict(size=8))
 
     #Sets the ticks and formats the background

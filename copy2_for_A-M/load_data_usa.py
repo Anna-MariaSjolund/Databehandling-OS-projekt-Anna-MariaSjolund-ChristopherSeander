@@ -9,8 +9,9 @@ def import_world_data() -> pd.DataFrame:
     
     Returns
     -------
-    DataFrame with columns:
-        ID, Name, Sex, Age, Height, Weight, Team, NOC, Games, Year, Season, City, Sport, Event and Medal. 
+    pd.DataFrame
+        Columns: ID, Name, Sex, Age, Height, Weight, Team, NOC, 
+                Games, Year, Season, City, Sport, Event and Medal. 
     """
     
     return pd.read_csv("../Data/athlete_events.csv")
@@ -18,12 +19,13 @@ def import_world_data() -> pd.DataFrame:
 
 def import_full_data_usa() -> pd.DataFrame:
     """
-    Creates a dataset that exclusively contains data from the US.
+    Creates a dataframe that exclusively contains data from the US.
     
     Returns
     -------
-    usa_data:pd.DataFrame
-        Columns: ID, Name, Sex, Age, Height, Weight, Team, NOC, Games, Year, Season, City, Sport, Event and Medal. 
+    usa_data : pd.DataFrame
+        Columns: ID, Name, Sex, Age, Height, Weight, Team, NOC, 
+                Games, Year, Season, City, Sport, Event and Medal. 
     """
 
     usa_data = import_world_data()
@@ -36,14 +38,14 @@ def import_full_data_usa() -> pd.DataFrame:
 
 def import_medals_won() -> pd.DataFrame: 
     """
-    Creates a dataset that contains only the winnings for the US.
+    Creates a dataframe, which contains only the winnings for the US.
     Since team winnings are counted per participants in the original dataset, 
     the function only returns the rows that are unique across event, games and medal.
-    (However in the cases where there is a tie between two Americans, this will not give the correct result.)
+    (However in the cases where there is a tie between two Americans, this will still not give the correct result.)
     
     Returns
     -------
-    medals:pd.DataFrame
+    medals : pd.DataFrame
         Columns: ID, Name, Sex, Age, Height, Weight, Team, NOC, Games, Year, Season, City, Sport, Event and Medal.
         The dataframe contains only the winnings for the US. 
     """
@@ -55,18 +57,17 @@ def import_medals_won() -> pd.DataFrame:
     return medals
 
 
-def import_medals_data() -> pd.DataFrame:
+def import_medals_count() -> pd.DataFrame:
     """
-    Creates a dataset with information about the number of medals for each Olympic Game.
+    Creates a dataframe with information about the number of medals for each Olympic Game.
 
     Returns
     -------
-    medals_merged_data:pd.DataFrame
+    medals_merged_data : pd.DataFrame
         Columns: Year, Season, Games, Medals USA, Medals total and Percentage of Medals.
-
     """
 
-    #Creates datasets
+    #Creates dataframes
     #Only include the rows where there are medals and do not include team sports
     sport_data = import_world_data().dropna(subset=["Medal"]).drop_duplicates(subset=["NOC", "Event", "Games", "Medal"])
     medals_usa = import_medals_won()
@@ -96,14 +97,15 @@ def import_medals_per_sport_and_event() -> list:
 
     Returns
     -------
-    return_data:list (of two pd.DataFrames)
-        Columns: Sport/Event, Total medals, Gold, Silver and Bronze
+    sport_and_event_data : list
+        The returned list consists of two pd.DataFrames (first=Sport, second=Event).
+        Columns: Sport or Event, Total medals, Gold, Silver and Bronze
     """
 
     #Import the data
     medals = import_medals_won()
 
-    return_data = []
+    sport_and_event_data = []
 
     for game in ["Sport", "Event"]:
 
@@ -118,36 +120,39 @@ def import_medals_per_sport_and_event() -> list:
         number_medals = pd.merge(number_medals, number_silver, on=game, how="outer")
         number_medals = pd.merge(number_medals, number_bronze, on=game, how="outer")
 
-        return_data.append(number_medals)
+        sport_and_event_data.append(number_medals)
     
-    return return_data
+    return sport_and_event_data
 
 
 def import_top_ten_sports_and_events_all_medal_types() -> list:
-    """Picks out the top ten sports and events for total, gold, silver and bronze.
+    """
+    Picks out the top ten sports and events for total, gold, silver and bronze medals.
     
     Returns
     -------
-    return_data:list
-        A list of two lists, each consisting of four dataframes.
-        Columns: Sport/Event, Total medals, Gold, Silver and Bronze
+    sport_event_all_medals_data : list
+        A list of two lists, each consisting of four dataframes (first list=Sport, second list=Event).
+        Lists: [[top_ten_total, top_ten_gold, top_ten_silver, top_ten_bronze], [top_ten_total, top_ten_gold, top_ten_silver, top_ten_bronze]]
+        Columns in dataframe: Sport or Event, Total medals, Gold, Silver and Bronze.
     """
 
     #Import the data
     sport_medals, event_medals = import_medals_per_sport_and_event()
 
-    return_data = []
+    sport_event_all_medals_data = []
 
     for df in [sport_medals, event_medals]:
+
         #Sort the medals 
         top_ten_total = df.sort_values(by="Total medals", ascending=False).reset_index(drop=True).head(10)
         top_ten_gold = df.sort_values(by="Gold", ascending=False).reset_index(drop=True).head(10)
         top_ten_silver = df.sort_values(by="Silver", ascending=False).reset_index(drop=True).head(10)
         top_ten_bronze = df.sort_values(by="Bronze", ascending=False).reset_index(drop=True).head(10)
 
-        return_data.append([top_ten_total, top_ten_gold, top_ten_silver, top_ten_bronze])
+        sport_event_all_medals_data.append([top_ten_total, top_ten_gold, top_ten_silver, top_ten_bronze])
     
-    return return_data
+    return sport_event_all_medals_data 
 
 
 #PARTICIPANTS (INCLUDING GENDER) DATA
@@ -159,13 +164,12 @@ def import_participants_data() -> pd.DataFrame:
     
     Returns
     -------
-    participants_data:pd.DataFrame
+    participants_data : pd.DataFrame
         A dataframe with information about participants (number and gender) for US and the world.
-        Columns: 
-            Year, Season, Games, Participants from USA, Total Number of Participants, 
-            American Participants (%), Number of Males from USA, Number of Females from USA, 
-            Total Number Males, Total Number Females, Female Participants from USA (%), 
-            Male Participants from USA (%), World Female Participants (%), World Male Participants (%)
+        Columns: Year, Season, Games, Participants from USA, Total Number of Participants, 
+                American Participants (%), Number of Males from USA, Number of Females from USA, 
+                Total Number Males, Total Number Females, Female Participants from USA (%), 
+                Male Participants from USA (%), World Female Participants (%), World Male Participants (%)
     """
 
     #Import the data

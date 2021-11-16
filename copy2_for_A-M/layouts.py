@@ -9,7 +9,8 @@ sport_statistics = SportStatistics()
 
 sport_options_dropdown = [{"label" : sport, "value" : sport} for sport in sport_statistics.sports()]
 
-#A-Ms part USA
+
+#USA LAYOUT
 
 #Creates the options for the first dropdown (Medals or Participants)
 usa_options_dict = dict(medals = "Medals", participants = "Participants")
@@ -80,6 +81,9 @@ usa_layout = html.Div([
                     ),
             className="mt-2" ) 
         ])
+
+
+
 
 sports_layout = html.Div([
     dcc.Store(id="sports-data"),
