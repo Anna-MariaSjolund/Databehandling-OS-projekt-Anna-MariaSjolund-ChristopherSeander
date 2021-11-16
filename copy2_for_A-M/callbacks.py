@@ -150,7 +150,7 @@ def update_toggle_switch(choice1, choice2, choice3):
         else:
             return ("Event / Sport", False)
     else:
-        if choice2 == "participants" and choice3 != "percentage":
+        if choice2 == "participants" and choice3 != "Percentage":
             return ("Normal / Log-scaled", False)
         else:
             return ("Disabled", True)
@@ -183,5 +183,5 @@ participants_options_dict = dict(participants = "Participants from USA and the W
 #Dictionaries for Radio Buttons
 medals_per_year_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer") #percentage="Percentage or Total")
 medals_per_sport_options_dict = dict(all = "All medals", Gold = "Gold", Silver = "Silver", Bronze = "Bronze", total = "Total number of medals") #sport_or_event="Sport or Event?", 
-plot_participants_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer", percentage="American Participants (%)") #, percentage="Percentage or Total", log_scaled="Yes or no?")
+plot_participants_options_dict = dict(All = "All seasons", Winter="Winter", Summer="Summer", Percentage="American Participants (%)") #, percentage="Percentage or Total", log_scaled="Yes or no?")
 gender_options_dict = dict(all = "All seasons", winter="Winter", summer="Summer")

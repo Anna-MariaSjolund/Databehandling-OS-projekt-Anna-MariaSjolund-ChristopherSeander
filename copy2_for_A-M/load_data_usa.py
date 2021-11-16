@@ -207,4 +207,3 @@ def import_participants_data() -> pd.DataFrame:
     participants_data["World Male Participants (%)"] = ((participants_data["Total Number Males"]/participants_data["Total Number of Participants"])*100).round(1)
 
     return participants_data
-

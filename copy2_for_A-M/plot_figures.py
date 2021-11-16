@@ -74,10 +74,13 @@ def plot_medals_per_year(season:str="all", percentage:bool=True) -> px.line:
                 markers=True, 
                 )
 
+    #Settings for line
+    fig.update_traces(line=dict(width=3), marker=dict(size=8))
+
     #Plot data for when the Olympic Games were hosted by USA
-    fig.add_trace(go.Scatter(x=OG_in_USA["Year"], y=OG_in_USA[y_data], mode="markers", name="Olympic Games in USA", marker=dict(size=10, color="LightSeaGreen")))
+    fig.add_trace(go.Scatter(x=OG_in_USA["Year"], y=OG_in_USA[y_data], mode="markers", name="Olympic Games in USA", marker=dict(size=12, color="LightSeaGreen")))
     
-    #Sets the hovertemplate
+    #Sets the hovertemplate for all lines
     fig.update_traces(hovertemplate=hover_template)
 
     #Sets the ticks and formats the background
@@ -144,6 +147,12 @@ def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
     else:
         x_data = "Event"
 
+    #Sets the title
+    if y_data == "all" or y_data == "total":
+        title = f"Top Ten {x_data}s for USA in the Olympic Games"
+    else:    
+        title = f"{x_data}s with the Most {y_data} Medals for USA in the Olympic Games"
+
     #Settings for y_data and bar_colors
     colors_dict = dict(Bronze="#CD7F32", Silver="#C0C0C0", Gold="#FFD700")
     if y_data == "all": 
@@ -155,17 +164,16 @@ def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
     else:
         bar_colors = [colors_dict[y_data]]
 
-    #Sets the title
-    if y_data == "all" or y_data == "total":
-        title = f"Top Ten {x_data}s for USA in the Olympic Games"
-    else:    
-        title = f"{x_data}s with the Most {y_data} Medals for USA in the Olympic Games"
-
     #Creates the plot
     fig = px.bar(dataset, 
                     x=x_data, 
                     y=y_data, 
-                    labels={"value":"Number of medals", "variable":"Medal Type"}, 
+                    labels={"value" : "Number of Medals", 
+                            "variable" :"Medal Type", 
+                            "Gold" : "Number of Gold Medals",
+                            "Silver" : "Number of Silver Medals", 
+                            "Bronze" : "Number of Bronze Medals",
+                            "Total medals" : "Total Number of Medals"}, 
                     title=title,
                     barmode="group", 
                     color_discrete_sequence=bar_colors, 
@@ -179,7 +187,7 @@ def plot_top_ten_sports_or_events(y_data:str="all", sport:bool=True) -> px.bar:
     return fig
 
 
-def plot_participants(data_to_show = "all", log_scaled=True):
+def plot_participants(data_to_show = "All", log_scaled=True):
     """
     Creates a plotly line graph, showing the number of US participants in the Olympic Games.
 
@@ -196,51 +204,92 @@ def plot_participants(data_to_show = "all", log_scaled=True):
         A line graph figure with year on the x-axis and number of participants on the y-axis.
     """
 
-    #Import the data and pick out the initial y_data
+    #Import the data, create datasets for summer and winter and set the initial y_data
     participants_data = load_data_usa.import_participants_data()
-    y_data = ["Participants from USA", "Total Number of Participants"]
+    participants_summer = participants_data[participants_data["Season"] == "Summer"]
+    participants_winter = participants_data[participants_data["Season"] == "Winter"]
+    y_data = ["Total Number of Participants", "Participants from USA"]
 
-    #Settings depedning on the data_to_show
-    if data_to_show == "all":
-        color="Season"
-        line_color = ["OrangeRed", "RoyalBlue"]
-        title="Participants from the USA and the World in the Olympic Games"
-    elif data_to_show == "summer":
-        participants_data = participants_data[participants_data["Season"] == "Summer"]
-        line_color = ["IndianRed", "DarkRed"]
-        title="Participants from the USA and the World in the Summer Olympic Games"
-    elif data_to_show == "winter":
-        participants_data = participants_data[participants_data["Season"] == "Winter"]
-        line_color=["CornflowerBlue", "Navy"]
-        title="Participants from the USA and the World in the Winter Olympic Games"
+    #Settings for Summer and Winter 
+    if data_to_show == "Summer":
+        dataset = participants_summer
+        line_color = ["#c90016", "#f08080"]
+    elif data_to_show == "Winter":
+        dataset = participants_winter
+        line_color=["#1560bd", "#b0c4de"]
+    elif data_to_show == "Percentage":
+        dataset = participants_data
+        y_data = "American Participants (%)"
+        y_label = "American Participants (%)"
+        line_color=["OliveDrab"]
     
-    #Sets the color to None for all options, except for the all-option.
-    if data_to_show == "summer" or data_to_show == "winter" or data_to_show == "percentage":
-        color=None
+    #Sets the title
+    if data_to_show == "All":
+        title = "Participants from the USA and the World in the Olympic Games"
+    elif data_to_show == "Percentage":
+        title = "American Participants in the Olympic Games in Percentage"
+    else:
+        title = f"Participants from the USA and the World in the {data_to_show} Olympic Games"
 
     #Sets the y-label
-    if log_scaled == True:
+    if log_scaled == True and data_to_show != "Percentage":
         y_label = "Number of Participants (log-scaled)"
-    else:
+    elif log_scaled == False and data_to_show != "Percentage":
         y_label = "Number of Participants"
+   
+    #Creates the figure
+    if data_to_show == "All":
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+                    x=participants_summer["Year"], 
+                    y=participants_summer["Participants from USA"], 
+                    customdata=participants_summer["Season"], 
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Participants from USA: %{y}<extra></extra>", 
+                    mode="lines+markers", 
+                    name="Participants from USA (summer)", 
+                    marker=dict(color="#f08080")))
+        fig.add_trace(go.Scatter(
+                    x=participants_summer["Year"], 
+                    y=participants_summer["Total Number of Participants"], 
+                    customdata=participants_summer["Season"], 
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Total Number of Participants: %{y}<extra></extra>",
+                    mode="lines+markers", 
+                    name="Total Number of Participants (summer)", 
+                    marker=dict(color="#c90016")))
+        fig.add_trace(go.Scatter(
+                    x=participants_winter["Year"], 
+                    y=participants_winter["Participants from USA"], 
+                    customdata=participants_winter["Season"], 
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Participants from USA: %{y}<extra></extra>",
+                    mode="lines+markers", 
+                    name="Participants from USA (winter)", 
+                    marker=dict(color="#b0c4de")))
+        fig.add_trace(go.Scatter(
+                    x=participants_winter["Year"], 
+                    y=participants_winter["Total Number of Participants"], 
+                    customdata=participants_winter["Season"],
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Total Number of Participants: %{y}<extra></extra>",
+                    mode="lines+markers", 
+                    name="Total Number of Participants (winter)", 
+                    marker=dict(color="#1560bd")))    
+    else:
+        fig = px.line(dataset, 
+                x="Year", 
+                y=y_data, 
+                color_discrete_sequence=line_color,
+                markers=True,
+                log_y=log_scaled,
+                title=title, #Title has to be set here as well (even though updated below), otherwise the grid is not evenly spaced for log-scaled Winter
+                labels={"variable":"Participant Group", "value":"Number of Participants"}
+                )
 
-    #Settings for the percentage option (overwrites some previous specified values)
-    if data_to_show == "percentage":
-        y_data = "American Participants (%)"
-        log_scaled = False 
-        line_color=["OliveDrab"]
-        title = "American Participants in the Olympic Games in Percentage"
+    #General settings for all plots
+    fig.update_traces(line=dict(width=3), marker=dict(size=8))   
+    fig.update_layout(title=title, yaxis_title=y_label, legend_title="Participant Group")
 
-    fig = px.line(participants_data, 
-            x="Year", 
-            y=y_data,
-            color=color, 
-            log_y=log_scaled,
-            labels={"value":y_label, "variable": "Participants"}, 
-            color_discrete_sequence=line_color,
-            title=title,
-            markers=True,
-            )
+    #Log-scaling
+    if log_scaled == True and data_to_show == "All":
+        fig.update_yaxes(type="log")
 
     #Sets the ticks and formats the background
     fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)), 
