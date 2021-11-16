@@ -6,7 +6,7 @@ from dash.dependencies import Output, Input
 from app import app
 from noc_to_region import noc_to_region
 from layouts import sport_statistics
-import plot_figures
+import plot_figures #NEED THIS
 
 sport_statistics_dict = dict(age = " Age distribution",
                             athlete = " Athlete info",
@@ -109,7 +109,7 @@ def update_sports_graph(df_json, statistic, sport):
 
 
 
-#A-Ms part
+#USA CALLBACKS
 
 #Dictionaries for second dropdown
 medals_options_dict = dict(medals_year = "Medals won per year", top_ten_sports_events = "Top ten sports or events")
@@ -190,7 +190,7 @@ def update_graph(usa_dropdown_choice, second_dropdown_choice, radio_buttons_choi
         if second_dropdown_choice == "medals_year":
             return plot_figures.plot_medals_per_year(season=radio_buttons_choice, percentage=switch_choice)
         else:
-            return plot_figures.plot_top_ten_sports_or_events(y_data=radio_buttons_choice, sport=switch_choice) #TODO: Change function, not interested in total here
+            return plot_figures.plot_top_ten_sports_or_events(y_data=radio_buttons_choice, sport=switch_choice) 
 
     else:
         if second_dropdown_choice == "participants":
