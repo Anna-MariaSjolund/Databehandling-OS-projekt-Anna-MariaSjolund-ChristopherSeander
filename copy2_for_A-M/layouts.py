@@ -29,7 +29,7 @@ usa_layout = html.Div([
                             style={"height": "7rem","padding":"1rem"}
                             )                    
                         ), 
-                    width=2
+                    xl=2, lg=2, md=6, sm=12
                     ),
                 dbc.Col(
                     dbc.Card(
@@ -42,7 +42,7 @@ usa_layout = html.Div([
                             style={"height": "7rem"}
                             )
                         ), 
-                    width=4
+                    xl=4, lg=4, md=6, sm=12
                     ),
                 dbc.Col(
                     dbc.Card(
@@ -56,7 +56,7 @@ usa_layout = html.Div([
                             style={"height": "7rem"},
                             )
                         ), 
-                    width=4
+                    xl=4, lg=4, md=8, sm=12
                     ),
                 dbc.Col(
                     dbc.Card(
@@ -70,7 +70,7 @@ usa_layout = html.Div([
                             style={"height": "7rem", "padding-top":"30px"} #Reference: https://www.w3schools.com/cssref/pr_padding-top.asp
                             )
                         ), 
-                    width=2
+                    xl=2, lg=2, md=4, sm=12
                 )],
                 className="mt-2"
             ),
@@ -80,9 +80,6 @@ usa_layout = html.Div([
                     ),
             className="mt-2" ) 
         ])
-
-        
-
 
 sports_layout = html.Div([
     dcc.Store(id="sports-data"),
