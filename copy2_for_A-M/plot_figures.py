@@ -221,6 +221,7 @@ def plot_participants(data_to_show = "All", log_scaled=True):
         dataset = participants_data
         y_data = "American Participants (%)"
         y_label = "American Participants (%)"
+        log_scaled = False
         line_color=["OliveDrab"]
     
     #Sets the title
@@ -242,14 +243,6 @@ def plot_participants(data_to_show = "All", log_scaled=True):
         fig = go.Figure()
         fig.add_trace(go.Scatter(
                     x=participants_summer["Year"], 
-                    y=participants_summer["Participants from USA"], 
-                    customdata=participants_summer["Season"], 
-                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Participants from USA: %{y}<extra></extra>", 
-                    mode="lines+markers", 
-                    name="Participants from USA (summer)", 
-                    marker=dict(color="#f08080")))
-        fig.add_trace(go.Scatter(
-                    x=participants_summer["Year"], 
                     y=participants_summer["Total Number of Participants"], 
                     customdata=participants_summer["Season"], 
                     hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Total Number of Participants: %{y}<extra></extra>",
@@ -258,20 +251,29 @@ def plot_participants(data_to_show = "All", log_scaled=True):
                     marker=dict(color="#c90016")))
         fig.add_trace(go.Scatter(
                     x=participants_winter["Year"], 
+                    y=participants_winter["Total Number of Participants"], 
+                    customdata=participants_winter["Season"],
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Total Number of Participants: %{y}<extra></extra>",
+                    mode="lines+markers", 
+                    name="Total Number of Participants (winter)", 
+                    marker=dict(color="#1560bd"))) 
+        fig.add_trace(go.Scatter(
+                    x=participants_summer["Year"], 
+                    y=participants_summer["Participants from USA"], 
+                    customdata=participants_summer["Season"], 
+                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Participants from USA: %{y}<extra></extra>", 
+                    mode="lines+markers", 
+                    name="Participants from USA (summer)", 
+                    marker=dict(color="#f08080")))
+        fig.add_trace(go.Scatter(
+                    x=participants_winter["Year"], 
                     y=participants_winter["Participants from USA"], 
                     customdata=participants_winter["Season"], 
                     hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Participants from USA: %{y}<extra></extra>",
                     mode="lines+markers", 
                     name="Participants from USA (winter)", 
                     marker=dict(color="#b0c4de")))
-        fig.add_trace(go.Scatter(
-                    x=participants_winter["Year"], 
-                    y=participants_winter["Total Number of Participants"], 
-                    customdata=participants_winter["Season"],
-                    hovertemplate="Year: %{x}<br>Season: %{customdata}<br>Total Number of Participants: %{y}<extra></extra>",
-                    mode="lines+markers", 
-                    name="Total Number of Participants (winter)", 
-                    marker=dict(color="#1560bd")))    
+   
     else:
         fig = px.line(dataset, 
                 x="Year", 
@@ -288,7 +290,7 @@ def plot_participants(data_to_show = "All", log_scaled=True):
     fig.update_layout(title=title, yaxis_title=y_label, legend_title="Participant Group")
 
     #Log-scaling
-    if log_scaled == True and data_to_show == "All":
+    if log_scaled == True and data_to_show == "All" and data_to_show != "Percentage":
         fig.update_yaxes(type="log")
 
     #Sets the ticks and formats the background
@@ -335,12 +337,14 @@ def plot_gender_distribution(season="all"):
     #Creates the plot
     fig = px.line(participants_data, 
             x="Year", 
-            y=["Female Participants from USA (%)", "Male Participants from USA (%)", "World Female Participants (%)", "World Male Participants (%)"], 
+            y=["World Male Participants (%)", "Male Participants from USA (%)", "World Female Participants (%)", "Female Participants from USA (%)"], 
             title=title, 
             labels={"value":"Percentage", "variable": "Participant Group"}, 
-            color_discrete_sequence=["LightPink", "CornflowerBlue", "DeepPink", "MidnightBlue"],
+            color_discrete_sequence=["RoyalBlue", "LightSteelBlue", "DeepPink", "LightPink"],
             markers=True, 
             )
+
+    fig.update_traces(line=dict(width=3), marker=dict(size=8))
 
     #Sets the ticks and formats the background
     fig.update_layout(xaxis=(dict(tickmode = "linear", tick0 = 0, dtick = 4)), 
