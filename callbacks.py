@@ -230,6 +230,7 @@ def update_second_dropdown(choice):
 @app.callback(
     Output("radio-settings", "options"),
     Output("radio-settings", "value"),
+    Output("my-toggle-switch", "value"),
     Input("usa-dropdown", "value"),
     Input("second-dropdown", "value")
 )
@@ -238,14 +239,14 @@ def update_radio_buttons(usa_dropdown_choice, second_dropdown_choice):
 
     if usa_dropdown_choice == "medals":
         if second_dropdown_choice == "medals_year":
-            return [{"label" : label, "value" : value} for value, label in medals_per_year_options_dict.items()], "all"
+            return [{"label" : label, "value" : value} for value, label in medals_per_year_options_dict.items()], "all", True
         else:
-            return [{"label" : label, "value" : value} for value, label in medals_per_sport_options_dict.items()], "all"
+            return [{"label" : label, "value" : value} for value, label in medals_per_sport_options_dict.items()], "all", True
     else:
         if second_dropdown_choice == "participants":
-            return [{"label" : label, "value" : value} for value, label in plot_participants_options_dict.items()], "All"
+            return [{"label" : label, "value" : value} for value, label in plot_participants_options_dict.items()], "All", True
         else :
-            return [{"label" : label, "value" : value} for value, label in gender_options_dict.items()], "all"
+            return [{"label" : label, "value" : value} for value, label in gender_options_dict.items()], "all", False
 
 
 @app.callback(
