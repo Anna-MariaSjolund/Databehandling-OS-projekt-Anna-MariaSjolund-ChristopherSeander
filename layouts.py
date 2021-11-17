@@ -29,8 +29,7 @@ usa_layout = html.Div([
                                 value="medals",
                                 clearable=False)
                             ], 
-                            style={"height": "7rem","padding":"1rem"}
-                            )                    
+                            ), style={"height": "100%"}                    
                         ), 
                     xl=2, lg=2, md=6, sm=12
                     ),
@@ -43,8 +42,7 @@ usa_layout = html.Div([
                                 value="medals_year",
                                 clearable=False),
                             ],
-                            style={"height": "7rem"}
-                            )
+                            ), style={"height": "100%"}
                         ), 
                     xl=4, lg=4, md=6, sm=12
                     ),
@@ -56,9 +54,8 @@ usa_layout = html.Div([
                                 id="radio-settings", 
                                 value="all",
                                 style={"display" : "inline-block", "width" : "80%"}) #Reference: https://social.msdn.microsoft.com/Forums/en-US/9880882b-212a-4bc1-8932-8676784e4299/exact-alignment-of-radio-buttons-in-rows-and-columns?forum=asphtmlcssjavascript
-                                ],
-                            style={"height": "7rem"},
-                            )
+                            ],
+                            ), style={"height": "100%"}
                         ), 
                     xl=4, lg=4, md=8, sm=12
                     ),
@@ -71,8 +68,7 @@ usa_layout = html.Div([
                                 size=40,
                                 color="CornFlowerBlue",
                                 labelPosition="bottom"),
-                            style={"height": "7rem", "padding-top":"30px"} #Reference: https://www.w3schools.com/cssref/pr_padding-top.asp
-                            )
+                            ),style={"height": "100%"}
                         ), 
                     xl=2, lg=2, md=4, sm=12
                 )],
