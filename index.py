@@ -9,6 +9,7 @@ from app import app
 from layouts import usa_layout, sports_layout
 import callbacks
 
+import sys
 import logging
 
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
