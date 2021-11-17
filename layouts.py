@@ -68,6 +68,7 @@ usa_layout = html.Div([
                                 size=40,
                                 color="CornFlowerBlue",
                                 labelPosition="bottom"),
+                                style={"height": "7rem", "padding-top":"30px"} #Reference: https://www.w3schools.com/cssref/pr_padding-top.asp
                             ),style={"height": "100%"}
                         ), 
                     xl=2, lg=2, md=4, sm=12
