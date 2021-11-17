@@ -5,7 +5,7 @@ from dash.dependencies import Output, Input
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
-from app import app
+from app import app, server
 from layouts import usa_layout, sports_layout
 import callbacks
 
