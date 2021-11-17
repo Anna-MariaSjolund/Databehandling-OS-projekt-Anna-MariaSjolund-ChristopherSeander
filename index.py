@@ -9,12 +9,6 @@ from app import app, server
 from layouts import usa_layout, sports_layout
 import callbacks
 
-import sys
-import logging
-
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
-
 # main layout
 app.layout = dbc.Container([
     html.H1(id="title", className="pt-3"),      # dashboard title
