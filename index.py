@@ -6,7 +6,7 @@ from dash import dcc, html
 import dash_bootstrap_components as dbc
 
 from app import app
-from layouts import usa_layout, sports_layout
+#from layouts import usa_layout, sports_layout
 import callbacks
 
 import sys
@@ -17,36 +17,10 @@ app.logger.setLevel(logging.ERROR)
 
 # main layout
 app.layout = dbc.Container([
-    html.H1(id="title", className="pt-3"),      # dashboard title
-    dbc.Card([
-        dbc.CardBody(
-        dcc.Tabs(id="tabs", value="tab-usa",    # tabs bar
-                children=[
-                        dcc.Tab(label="USA", 
-                                value="tab-usa",
-                                className="custom-tab",
-                                style={"background-color": "#424242"}),
-                        dcc.Tab(label="Sports statistics", 
-                                value="tab-sports",
-                                className="custom-tab",
-                                style={"background-color": "#424242"})
-                        ])
-        )
-    ], className="mt-3"),
-    html.Div(id="content"),     # content container
+    html.H1("asdasd"),      # dashboard title
+
 ])
 
-# changed what is shown in "content"
-@app.callback(
-    Output("content", "children"),
-    Output("title", "children"),
-    Input("tabs", "value")
-)
-def render_content(tab):
-    if tab == "tab-usa":
-        return usa_layout, "Olympic History in USA (1896-2016)"
-    else:
-        return  sports_layout, "Sports Statistics in the Olympic Games"
 
 if __name__ == "__main__":
     app.run_server()
