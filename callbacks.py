@@ -266,7 +266,7 @@ def update_toggle_switch(usa_dropdown_choice, second_dropdown_choice, radio_butt
             return ("Event / Sport", False)
     else:
         if second_dropdown_choice == "participants" and radio_button_choice != "Percentage":
-            return ("Ordinary / Log scale", False)
+            return ("Linear / Log scale", False)
         else:
             return ("Not available", True) 
 
