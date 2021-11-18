@@ -242,13 +242,13 @@ class SportStatistics:
         return self._data["Sport"].sort_values().unique()
 
     def medals(self, sport, gender) -> DataFrame:
-        """Returns: Medal count for top 10 countries based on sport and time period"""
+        """Returns: Medal count for top 10 countries based on sport and gender"""
 
-        # select correct sport and time period
+        # select correct sport
         medal_data = self.sport_and_year(sport)
         medal_data = unique_medals(medal_data)
 
-        # selects geneder
+        # selects gender
         if gender == "both":
             medal_data = medal_data["Medal"].groupby(medal_data["NOC"]).count().sort_values(ascending=False).head(10)
         elif gender == "male":
@@ -262,9 +262,9 @@ class SportStatistics:
         return medal_data
 
     def gender(self, sport) -> DataFrame:
-        """Returns: gender count per year for selected sport and time period"""
+        """Returns: gender count per year for selected sport and gender"""
 
-        # select correct sport and time period
+        # select correct sport
         gender_data = self.sport_and_year(sport)
 
         # male data
@@ -283,7 +283,7 @@ class SportStatistics:
     def age(self, sport) -> DataFrame:
         """Returns: ages of everyone in selected sport"""
         
-        # select correct sport and time period
+        # select correct sport
         age_data = self.sport_and_year(sport)
 
         # new DataFrame with all ages from males and females
@@ -295,9 +295,9 @@ class SportStatistics:
         return age_data
 
     def height_basketball(self, gender) -> DataFrame:
-        """Returns: mean height per medal for basketball players for set time period"""
+        """Returns: mean height per medal for basketball players for selected gender"""
 
-        # select basketball data from selected time period
+        # select basketball data
         height_data = self.sport_and_year("Basketball")
 
         # select gender
@@ -324,9 +324,9 @@ class SportStatistics:
 
         return mean_hight_data
 
-    # help function for selecting sport and year
+    # help function for selecting sport
     def sport_and_year(self, sport) -> DataFrame:
-        """Returns: Dataframe with specific sport and time period"""
+        """Returns: Dataframe with specific sport"""
         data = self._data[self._data["Sport"] == sport]
 
         return data
