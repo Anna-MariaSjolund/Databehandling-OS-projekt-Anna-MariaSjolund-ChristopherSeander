@@ -216,7 +216,6 @@ def import_participants_data() -> pd.DataFrame:
 
 class SportStatistics:
 
-
     def __init__(self) -> None:
         read_data = import_world_data()
         sports = read_data[read_data["Sport"].isin(["Alpine Skiing", "Basketball", "Gymnastics", "Rhythmic Gymnastics"])]
