@@ -75,7 +75,7 @@ def filtered_sports(sport, statistic, gender):
 # displays graph
 @app.callback(
     Output("sports-graph", "figure"),   # return outputs to here
-    Input("sports-data", "data"),       # gets data based on which country is chosen
+    Input("sports-data", "data"),       # gets data
     Input("sport-statistics", "value"), # select which statistic that should be shown
     Input("sports-dropdown", "value"),  # get which sport that is selected
     Input("gender-selection", "value")  # get which gender that is selected
