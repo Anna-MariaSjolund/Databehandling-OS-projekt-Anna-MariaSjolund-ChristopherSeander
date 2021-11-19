@@ -109,7 +109,6 @@ sports_layout = html.Div([
                                     value="age")
                 ]),
                 style={"height": "100%"},
-                className="",
             ),
             xl=7,
             md=5
